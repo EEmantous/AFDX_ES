@@ -1,0 +1,194 @@
+{
+  "AFDX_top": {
+    "function": "共享发送封装/SN、固定A/B复制、两路独立RX校验和身份消重组成独立端系统。两路仅由统一reset复位，A/B命名对称；统计36个地址槽，34项有效、2项保留为零。",
+    "necessity": "集中连接统一APP接口、两组对称MAC接口和全局复位，确保双路发送使用同一份封装与SN，接收按完整身份只交付一次。",
+    "position": "主设计顶层。当前发送端只有一个 TX VL；外部 MAC 和交换网络由接口或测试模型提供。",
+    "flow": "APP TX → u_tx → u_fanout → MAC A/B；MAC A/B → u_rx_a/u_rx_b → u_merge → APP RX。 各模块事件→u_stats→stats_rdata/error。"
+  },
+  "afdx_es_tx": {
+    "function": "组合发送帧管理器与报文输出器，把 APP 载荷流变成带 Ethernet/IPv4/UDP 头、padding 和 SN 的核心帧流，并支持输出反压。",
+    "necessity": "APP 写入速度与网络发送速度可能不同，完整帧排队、BAG 许可和逐字节封装需要协同。该封装层把这些内部过程连接起来，提供可复用的单 VL 发送接口。",
+    "position": "主顶层 u_tx；A/B 复制前只有一份共享实例。",
+    "flow": "APP → u_frame_manager；调度长度/许可及载荷读接口 → u_packet_output；核心帧 → 冗余复制器；输出 busy/start 反馈给调度器。"
+  },
+  "afdx_tx_frame_manager": {
+    "function": "接收 APP 握手字节，将 data/last 存入载荷 FIFO，累计帧长，在 last 握手时提交长度描述，并连接发送调度器。",
+    "necessity": "发送器需要完整帧的长度才能正确生成 IP/UDP 头和 padding。分别保存字节和帧描述，使未结束的帧留在接收阶段，已完成帧能够有序等待发送；满缓冲时通过 ready 限制继续写入。",
+    "position": "主 TX 的 u_frame_manager；当前仍信任 APP 提供合法长度及 last。",
+    "flow": "APP 字节 → u_payload_fifo；APP 帧尾形成的长度 → u_frame_scheduler；载荷同步读数据和调度长度/许可 → 报文输出器。"
+  },
+  "fifo_ip_tx": {
+    "function": "把 APP 的 8 位 data 与 1 位 last 合并为 9 位存储项，对写/读请求做 full/empty 保护，再拆出同步读数据。V3 内部使用 afdx_sync_fifo，旧模块名保留。",
+    "necessity": "帧管理器与 builder 需要稳定的载荷存储接口，而且 last 必须随字节一起排队。这个包装层保留既有 Standard 同步读契约，使存储实现更换后上层读时序保持一致。",
+    "position": "主 TX 帧管理器的 u_payload_fifo。",
+    "flow": "APP data/last → fifo_din → u_fifo_tx；FIFO dout → payload_read_data/last；full/empty → 上层写保护与读许可。旧 11 位占用输出在 2048 项全满时饱和到 2047。"
+  },
+  "afdx_sync_fifo": {
+    "function": "实现可推断的同钟同步 FIFO，默认 2048×9；用读写指针和占用计数管理 RAM，接受读请求的时钟沿后更新 dout，提供 full/empty。",
+    "necessity": "V3 需要一个能缓冲 APP 载荷且便于其他 FPGA 工具编译的存储实现。显式 RTL 描述指针、计数和同步读时序，能够通过综合推断 RAM，并独立检查满写、空读和同时读写行为。",
+    "position": "主 TX 的存储叶子模块，由 fifo_ip_tx 例化。",
+    "flow": "din/wr_en → RAM 写端；rd_en/read_pointer → 同步 dout；接受的读写事件 → 指针及 data_count → full/empty。"
+  },
+  "afdx_tx_frame_scheduler": {
+    "function": "组合完整帧描述 FIFO 与 BAG 计时器，在有完整帧、发送器空闲且 BAG 到期时产生调度许可，并弹出队首长度描述。",
+    "necessity": "缓冲里有字节并不代表已经有可发送的完整帧；帧完整后还要满足带宽间隔和发送器空闲条件。调度器统一这些许可条件，让输出器每次锁存一个对应的帧长。",
+    "position": "主 TX 帧管理器的 u_frame_scheduler。",
+    "flow": "完整帧长度 → u_frame_descriptor_fifo；描述非空和 busy/start → u_bag_timer；grant 同拍驱动描述出队，并把 scheduled_frame_length 送给输出器。"
+  },
+  "frame_descriptor_fifo": {
+    "function": "按帧保存长度描述，提供队首长度、空满及计数；支持合法的同时入队/出队，保护空读和满写。",
+    "necessity": "载荷 FIFO 保存的是连续字节，调度器还需要知道队列中每个完整帧的边界和长度。描述队列按同一顺序保存帧长，使一次调度能够对应正确的载荷范围。",
+    "position": "主 TX 调度器的 u_frame_descriptor_fifo。",
+    "flow": "APP last 形成的长度描述入队；队首长度供 builder 锁存；调度 grant 触发出队；empty/full 反馈发送许可与 APP 接受能力。"
+  },
+  "bag_timer": {
+    "function": "从 frame_transmit_start 装载 BAG_CYCLES-1 并倒计时，在计数到期、队列有帧且发送不忙时产生 bag_grant。",
+    "necessity": "虚拟链路需要按配置的带宽分配间隔发送，排队帧不能仅因输出空闲就立即连续启动。以实际 start 事件重新计时，可以把发送许可与输出真正开始的时刻关联。",
+    "position": "主 TX 调度器的 u_bag_timer；这里的 start 是共享核心输出流首字节握手，A/B MAC 侧实际首握手另由 fanout 检查。",
+    "flow": "frame_available/busy/start → 倒计时与许可逻辑 → bag_grant → 调度器弹出描述。"
+  },
+  "afdx_tx_packet_output": {
+    "function": "连接序列计数器、packet_builder 与两项弹性输出缓存；锁存调度信息，生成核心字节流，并将 busy 保持到核心流尾字节被接受。",
+    "necessity": "封装字节的生成与下游接受字节的时刻不同。该模块协调 SN、builder 读请求、输出缓存和调度反馈，使前一帧仍在等待尾握手时不会过早启动下一帧。",
+    "position": "主 TX 的 u_packet_output，输出接到冗余复制器。",
+    "flow": "调度 grant/length → u_packet_builder；u_sequence_counter 提供 SN；builder 应答 → u_switch_stream → 核心 ready/valid/last；实际首握手和 busy 反馈调度器。"
+  },
+  "packet_builder": {
+    "function": "在调度许可时锁存长度及 SN，按字节请求依次生成 42 字节头、同步 FIFO 载荷、短帧补零和尾部 SN，仅 SN 字节标记核心 last。",
+    "necessity": "APP 提供的是载荷，而 MAC 侧接口需要完整的协议核心帧。builder 用状态机明确头部、载荷、padding 和 SN 的边界，同时配合 FIFO 同步读延迟返回字节。",
+    "position": "主 TX 报文输出器的 u_packet_builder。",
+    "flow": "长度/SN → 本帧锁存；header_byte_index → u_header_builder；payload_read_enable → 载荷 FIFO；下一拍 builder_data/valid/last → 弹性输出缓存。"
+  },
+  "afdx_header_builder": {
+    "function": "根据头字节索引输出固定 Ethernet/IPv4/UDP 头；由补齐后的载荷长度计算 IP/UDP 长度和 IPv4 校验和，TX UDP checksum 字段为 0。",
+    "necessity": "每一帧的长度字段与校验和必须与真正发出的 padding 和 SN 一致。集中生成头部字段，使 builder 专注于发送阶段推进，也便于对头部每个字节建立独立黄金检查。",
+    "position": "主 TX builder 的 u_header_builder，为组合计算叶子模块。",
+    "flow": "静态地址/端口参数、payload_frame_length、header_byte_index → header_byte_data → builder 的头部阶段。"
+  },
+  "sequence_counter": {
+    "function": "提供 1～255 的 TX 序列号，复位为 1，收到 frame_transmit_done 时推进，255 后回到 1，其余时刻保持。",
+    "necessity": "接收序列检查和双网消重都依赖帧 SN。将序列状态独立保存，并放在共享封装链内，可以使同一逻辑帧的 A/B 副本携带相同身份。",
+    "position": "主 TX 报文输出器的 u_sequence_counter；计数发生在复制之前。",
+    "flow": "frame_transmit_done → SN 推进；sequence_number → builder 在调度时锁存 → 同一个核心帧被复制到 A/B。"
+  },
+  "afdx_tx_switch_stream": {
+    "function": "将 builder 的请求/下一拍应答接口转换为 ready/valid/last 输出，使用两项缓存并为在途请求预留空间，反压时保持队首字节。",
+    "necessity": "下游可以随时暂停，但已经发给 builder 的读请求仍会返回数据。弹性缓存同时管理已返回和在途字节，使停顿边界的应答有空间保存，保持字节顺序和帧尾。",
+    "position": "主 TX 报文输出器的 u_switch_stream；名字沿用旧版本，当前下游是 fanout。",
+    "flow": "缓存可用空间 → builder_read_request；builder_data/valid/last → 两项缓存；下游 ready → 缓存出队。"
+  },
+  "afdx_redundant_tx_fanout": {
+    "function": "1514字节共享核心帧RAM；每个合法帧固定向A/B复制，独立游标与实际首握手BAG；两路都完成才释放缓存，超长排空。",
+    "necessity": "A/B 下游的 ready 可以不同，需要分别记录每路已发送的位置和完成状态。共享完整帧缓存保证两路内容一致，独立游标使快速平面发送完成后等待慢平面而不会再次发送同一副本。",
+    "position": "主顶层 u_fanout，位于共享 TX 封装之后、两个外部 MAC 之前。",
+    "flow": "核心流先捕获到帧RAM；A/B ready各自推进游标并遵守BAG，两路帧尾均握手后释放缓存。不因单路暂停取消副本。"
+  },
+  "afdx_es_rx": {
+    "function": "连接MAC侧完整帧保护、packet_decoder和接收事务缓冲，把经过限长、超时、协议和序列检查的帧转换为载荷及VLID/SN，并上报每路异常事件。",
+    "necessity": "接收接口要同时协调网络输入、最终检查结果和 APP 读取速度。该封装层使候选数据只能在检查通过后被发布，并把身份和载荷连接到后续双网合并器。",
+    "position": "主顶层 u_rx_a/u_rx_b 各一份，具有独立平面复位和序列表。",
+    "flow": "MAC核心流→u_ingress_guard→u_packet_decoder；候选载荷和commit/abort→u_frame_manager；已提交载荷/VLID/SN→双网合并器；rx_events→内部统计。"
+  },
+  "packet_decoder": {
+    "function": "协调协议解析、存储空间反馈与按 VL 序列检查；解析失败、溢出或描述空间不足时 abort，检查通过时 commit，并在检查期间控制网络反压。",
+    "necessity": "一帧能否交付由协议合法性、序列结果和缓冲能力共同决定，且这些结果会在不同拍得到。协调状态机收集这些结果后给出一次明确的提交或回滚决定。",
+    "position": "每路 RX 的 u_packet_decoder。",
+    "flow": "核心字节 → u_rx_parser；解析完成的 VLID/SN → u_sequence_table；存储反馈和检查结果 → frame_commit/frame_abort → RX 帧管理器。"
+  },
+  "afdx_rx_parser": {
+    "function": "按握手字节位置提取 Ethernet/IPv4/UDP 字段和候选载荷，在核心帧尾识别 SN，校验协议、目的地址、长度以及 IP/UDP checksum，输出帧身份和解析结果。",
+    "necessity": "流接口每拍只提供一个字节，完整协议字段和校验结论需要跨多个字节累积。解析器把逐字节输入转为载荷流及帧级结果，供解码器决定是否提交。",
+    "position": "每路 RX 解码器的 u_rx_parser。",
+    "flow": "rx_data/valid/last 与 ready 握手 → 字节索引/字段/校验累积；候选载荷 → RX 缓冲；帧尾结果、VLID 和 SN → 解码器。"
+  },
+  "afdx_rx_sequence_table": {
+    "function": "保存每个直接映射槽的完整 VL 标签与最近 SN，复位逐项清 valid；拒绝 SN0 和同标签重复 SN，跳号接受并报错，标签冲突时替换。",
+    "necessity": "接收序列的判断必须关联同一个 VL 的历史，不能只比较全局 SN。完整标签避免不同 VL 低位索引相同而发生误比较；独立序列表也便于检查重复、回绕和初始化屏障。",
+    "position": "每路 RX 解码器的 u_sequence_table；默认 4096 项直接映射，容量及标签冲突策略仍需按最终 VL 配置验收。",
+    "flow": "已解析 VLID/SN → 寻址、同步读与比较 → pass/duplicate/error；被接受帧更新该槽序列历史。"
+  },
+  "afdx_rx_frame_manager": {
+    "function": "用环形 RAM 保存候选载荷，记录回滚起点；commit 时发布长度/VLID/SN 描述，abort 时撤销候选；APP 反压时保持已提交帧的输出及身份。",
+    "necessity": "长度、校验和与序列结果到帧尾或后续检查拍才完整，载荷却已提前到达。事务缓冲先暂存这些字节，再根据最终结论提交或回滚，使 APP 只读取已经验证的完整帧。",
+    "position": "每路 RX 的 u_frame_manager，位于解码器与双网合并器之间。",
+    "flow": "frame_capture_start 建立候选；payload_write 保存字节；commit/abort 决定描述发布或回滚；APP ready 推进已提交载荷和描述读取。"
+  },
+  "afdx_ab_frame_selector": {
+    "function": "分别缓存 A/B 已验证的完整载荷，以完整 (VLID,SN) 查询关联历史并丢弃重复副本；最先完整的帧优先，同拍 A 优先；输出载荷及身份，停顿时保持。",
+    "necessity": "A/B 同一逻辑帧可能先后到达，而且 APP 可能长时间暂停。完整身份历史区分同一副本和不同 VL 的同 SN 帧，预留并保护活动历史项使输出等待期间仍能正确消重，完整帧缓存保持交付不交织。",
+    "position": "主顶层 u_merge，位于两路 RX 提交出口与统一 APP RX 之间。",
+    "flow": "A/B payload + VLID/SN → 各路完整帧 RAM；候选身份 → 历史扫描/预留；选定 RAM → APP；APP 尾握手刷新历史时间，重复候选释放缓存。"
+  },
+  "tb_afdx_sync_fifo": {
+    "function": "驱动小容量 afdx_sync_fifo，逐项自检空读/满写、同步读时序、data/last 顺序、指针回绕、同时读写和同步复位。",
+    "necessity": "存储实现更换后，读延迟或满空规则差异会影响上层封装。独立 FIFO 自检把这些基本时序契约直接定位到存储模块。",
+    "position": "仿真测试模块，例化 afdx_sync_fifo；不属于 AFDX_top 综合层级。",
+    "flow": "测试时钟/请求/data → FIFO DUT；dout/full/empty/count → 黄金顺序与时序断言 → PASS 或 fatal。"
+  },
+  "tb_afdx_core_controls": {
+    "function": "分别测试描述 FIFO 的空满与顺序、BAG 许可间隔，以及 SN 保持和 255→1 回绕。",
+    "necessity": "帧描述出队、发送许可和序列推进共同决定正确的发送边界。单独检查这些控制叶子模块，能够在协议长帧测试之前定位基础控制错误。",
+    "position": "仿真测试模块，例化 frame_descriptor_fifo、bag_timer 和 sequence_counter。",
+    "flow": "边界读写/start/done 激励 → 三个 DUT；队首长度、grant、SN → 预期计数/顺序断言。"
+  },
+  "tb_afdx_sequence_table": {
+    "function": "直接发送 VLID/SN 检查请求，验证初始化屏障、重复及 SN0 拒绝、连续与回绕、跳号接受以及标签冲突替换。",
+    "necessity": "序列表结果同时依赖历史内容、同步存储读延迟和完整 VL 标签。定向请求可以精确构造这些边界，说明每种序列情况为何通过或拒绝。",
+    "position": "仿真测试模块，例化 afdx_rx_sequence_table。",
+    "flow": "测试 VLID/SN 请求 → 序列 DUT；ready/result/pass/duplicate/error → 预期响应断言。"
+  },
+  "tb_afdx_app_to_switch": {
+    "function": "向 afdx_es_tx 注入不同长度的 APP 载荷，检查不完整帧不发送、短帧补零、头/载荷/SN/last 和输出反压，包含连续帧压力。",
+    "necessity": "发送链路需要证明载荷、长度描述、builder 读延迟和弹性缓存协同后仍产生正确协议字节。该测试把这些层组合起来验证。",
+    "position": "仿真 TX 链路测试，名称沿用 V2；只例化 afdx_es_tx，没有交换机 DUT。",
+    "flow": "黄金 APP 帧 → TX DUT；模拟网络 ready 控制反压；实际核心字节/帧尾 → 黄金协议比较。"
+  },
+  "tb_afdx_switch_to_app": {
+    "function": "向 afdx_es_rx 注入合法与长度错误的核心帧，检查最大载荷边界、非法帧回滚、合法 APP 输出及连续帧/反压恢复。",
+    "necessity": "接收检查不仅要给出失败结果，还要保证坏候选字节不会被 APP 读出，并能继续接收下一帧。该测试验证解析、解码和事务缓冲的联合行为。",
+    "position": "仿真 RX 链路测试，名称沿用 V2；只例化 afdx_es_rx，没有交换机 DUT。",
+    "flow": "黄金/故意错误核心帧 → RX DUT；APP ready 控制反压；实际载荷/交付数量 → 合法预期及丢弃断言。"
+  },
+  "tb_afdx_redundant_tx_fanout": {
+    "function": "快速端不重复、A/B角色互换、B半帧暂停恢复、双端暂停、60帧非对称反压、最大/超长恢复、每路实际BAG至少50周期；按每字节与last自检。",
+    "necessity": "非对称ready要求每路独立保存游标；测试互换快慢端、半帧暂停与双端暂停，确保每路完整副本只发送一次。",
+    "position": "仿真冗余发送单测，例化 afdx_redundant_tx_fanout。",
+    "flow": "核心帧/两路 ready → fanout DUT；A/B 字节、尾握手与首字节时刻 → 独立黄金计数及 BAG 断言。"
+  },
+  "tb_afdx_ab_selector": {
+    "function": "同拍A优先、B先完整即优先、延迟旧SN副本、跨VL同SN、APP长时间反压、窗口过期、历史满不覆盖、260帧SN回绕、计时回绕、A先开始但B先完整以及超长排空。",
+    "necessity": "消重是否正确取决于完整身份、历史生命周期及 APP 接受时刻。定向构造这些情况可以检查候选判重、活动记录保护、容量反压和输出保持。",
+    "position": "仿真消重单测，例化 afdx_ab_frame_selector。",
+    "flow": "A/B payload/VLID/SN与 APP ready 激励 → selector DUT；合并载荷/帧尾/交付数量 → 黄金断言。"
+  },
+  "tb_afdx_ab_delayed_copy": {
+    "function": "先从 A 交付一帧，再延迟注入同一 VLID/SN 的 B 副本，检查 APP 最终只收到一次。",
+    "necessity": "迟到副本是此前消重修复对应的具体回归场景。单独保留最小重现场景，使后续历史管理改动仍能快速验证这个已修复问题。",
+    "position": "仿真迟到副本专项回归，例化 afdx_ab_frame_selector。",
+    "flow": "A 帧 → APP 首次交付；延迟 B 同身份帧 → 历史命中；输出计数/内容 → 一次交付断言。"
+  },
+  "tb_afdx_end_system": {
+    "function": "真实AFDX_top：9份共享TX帧在A/B各发送一次，10次完整身份APP交付；覆盖单路RX、同时RX、双端TX停顿及B半帧暂停后完整恢复。",
+    "necessity": "单模块通过后，仍需验证从 APP 写入到共享封装、冗余复制、两路 RX 和最终消重的身份与字节对齐。该测试通过单 ES 的真实完整层级确认移植后的模块组合关系。",
+    "position": "V3 默认仿真顶层，不属于综合设计；外部 MAC 交通用行为任务驱动。",
+    "flow": "APP 激励 → 真实 DUT TX；A/B 捕获并独立比对黄金核心帧 → MAC 侧 RX 注入；DUT APP RX → 数据/last/VLID/SN 及停顿保持断言。"
+  },
+  "afdx_rx_ingress_guard": {
+    "function": "在MAC侧保存一份完整核心帧，限定60～1514字节；超长立即转入排空，半帧输入停止达到可配置超时后丢弃；合格完整帧才送解析器。",
+    "necessity": "两路均可能收到无限超长或缺last的流，候选不能无限增长或永久占用解析器状态。独立有限缓冲隔离非法流，帧尾或空闲边界释放被拒绝流；输出反压期间暂停超时判定，保持合法完整帧。",
+    "position": "每路afdx_es_rx的u_ingress_guard，两路各一份，位于外部MAC和packet_decoder之间。",
+    "flow": "MAC核心字节→限长捕获/排空/空闲超时；完整合格帧→decoder；complete/oversize/timeout/short事件→端系统统计。"
+  },
+  "afdx_es_stats": {
+    "function": "36个32位饱和计数地址槽，其中34项运行/异常统计有效，0x0C/0x10保留为零；组合读取、统一清零，并诊断APP TX超长与半帧输入超时。",
+    "necessity": "错误事件通常只有一拍，需要持续累计才能诊断两路异常和恢复情况。独立A/B计数避免同时异常只加一次，内置寄存器便于Vivado调试和后续管理协议读取。",
+    "position": "AFDX_top.u_stats；全局reset或stats_clear清计数。",
+    "flow": "TX/RX/消重事件向量→饱和累加；APP握手→TX输入诊断；stats_addr→stats_rdata/error；stats_clear优先于同拍事件。"
+  },
+  "tb_afdx_rx_protection_stats": {
+    "function": "在一个真实AFDX_top上同时注入双路超长、缺last、短帧与长度错误，检查恢复、最大帧、正常长反压以及TX/RX分类计数、读地址、饱和和清零。",
+    "necessity": "单路异常测试不能证明两路同时异常时都能释放缓冲且各自计数。完整DUT自检同时核对非法帧不交付、后续合法帧身份正确和统计只计一次，另用统计叶子DUT检查近溢出边界。",
+    "position": "新增仿真测试模块；主DUT是AFDX_top，另例化afdx_es_stats验证饱和边界。",
+    "flow": "独立黄金协议帧/错误流→A/B RX；APP输出→逐字节身份断言；APP TX及两路ready→发送事件；统计读回→分类计数断言。"
+  }
+}

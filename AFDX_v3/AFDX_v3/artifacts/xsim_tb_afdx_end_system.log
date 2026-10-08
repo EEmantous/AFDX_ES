@@ -1,4 +1,0 @@
-Vivado Simulator 2018.3
-Time resolution is 1 ps
-V3 END SYSTEM PASSED: 9 shared TX frames, 10 identity-checked deliveries, external MAC models only
-$finish called at time : 8503040 ns : File "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sim_1/new/tb_afdx_end_system.v" Line 160

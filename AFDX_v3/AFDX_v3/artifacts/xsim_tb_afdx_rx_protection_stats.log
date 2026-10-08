@@ -1,4 +1,0 @@
-Vivado Simulator 2018.3
-Time resolution is 1 ps
-RX PROTECTION STATS PASSED: simultaneous oversize/missing-last, recovery, backpressure, RX/TX reasons, saturation and clear
-$finish called at time : 2311881 ns : File "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sim_1/new/tb_afdx_rx_protection_stats.v" Line 175

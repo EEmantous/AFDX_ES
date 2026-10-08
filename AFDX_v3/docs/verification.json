@@ -1,0 +1,227 @@
+{
+  "date": "2026-10-07",
+  "status": "passed",
+  "rtl_files": 22,
+  "testbench_files": 10,
+  "top": "AFDX_top",
+  "unused_rtl": [],
+  "regression": {
+    "project": "AFDX V3 standalone ES",
+    "date": "2026-10-07",
+    "simulator": "ModelSim",
+    "passed": true,
+    "folder": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147",
+    "results": [
+      {
+        "test": "tb_afdx_sync_fifo",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.5,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_sync_fifo.log"
+      },
+      {
+        "test": "tb_afdx_core_controls",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.44,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_core_controls.log"
+      },
+      {
+        "test": "tb_afdx_sequence_table",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.42,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_sequence_table.log"
+      },
+      {
+        "test": "tb_afdx_rx_protection_stats",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.53,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_rx_protection_stats.log"
+      },
+      {
+        "test": "tb_afdx_ab_selector",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.44,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_ab_selector.log"
+      },
+      {
+        "test": "tb_afdx_ab_delayed_copy",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.41,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_ab_delayed_copy.log"
+      },
+      {
+        "test": "tb_afdx_redundant_tx_fanout",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.41,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_redundant_tx_fanout.log"
+      },
+      {
+        "test": "tb_afdx_app_to_switch",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.47,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_app_to_switch.log"
+      },
+      {
+        "test": "tb_afdx_switch_to_app",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.44,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_switch_to_app.log"
+      },
+      {
+        "test": "tb_afdx_end_system",
+        "passed": true,
+        "returncode": 0,
+        "seconds": 1.55,
+        "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_100147\\tb_afdx_end_system.log"
+      }
+    ]
+  },
+  "xsim_passed": true,
+  "protection_xsim_passed": true,
+  "synthesis_passed": true,
+  "documentation": {
+    "modules": 32,
+    "hdl_callables": 39,
+    "declarations": 1101,
+    "port_connections": 448
+  },
+  "source_hashes": [
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_ab_delayed_copy.v",
+      "sha256": "c0590d0ab1a14622a6d850b632cea9492d0740210116e22022f50799623c2bdf"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_ab_selector.v",
+      "sha256": "1391a357769d1d09548e28aa5df4504e948efcf63add0471a50e5d92c776f68e"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_app_to_switch.v",
+      "sha256": "07c13c1c0a8573bc4e20ee6f26f4b3e1e38bce69e558db27fe3799639a3a1073"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_core_controls.v",
+      "sha256": "0c516c8a7291dc89112a780ccbddf961dc44f032d6907094272546660f758b28"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_end_system.v",
+      "sha256": "03a0791641de6b5f6707a5451af2f21f144378ac1b2bfcf4988d99e9f2029ffd"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_redundant_tx_fanout.v",
+      "sha256": "43aefca36419f7066971809867a244edfeda9674133dad682665b0866213d3c9"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_rx_protection_stats.v",
+      "sha256": "3da5ba074844e65a37ebfb0a48e4e5bda7a0d4f85f1ecb977f604386a4fcee7c"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_sequence_table.v",
+      "sha256": "70322ae5a894887d59e048e859e0e4178d73fd90ba5d3a4e9b8dfdfd5cb4b74b"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_switch_to_app.v",
+      "sha256": "23cbde639c5d0c2dfbae94ca0db2c44621c30804455a33ed539a7aba0dee529e"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sim_1\\new\\tb_afdx_sync_fifo.v",
+      "sha256": "7749df6a5c3b5ecd10b807278f89b9d09cdc72f98ed5cfa8c8c0311556a5e41d"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_ab_frame_selector.v",
+      "sha256": "50eea60f8805c9dcaefeb62df68b2f9314d7c6930d4b308c8298833fbf4f511c"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_es_rx.v",
+      "sha256": "2a9a54470ceadae5708a8ff45393d77bba0fd6b6b8433d3e0aaa556534e272cc"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_es_stats.v",
+      "sha256": "67df5a9821ec93568b87ff393df258f72bd97e557be870b44ab77afb87aab415"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_es_tx.v",
+      "sha256": "242919be404c923af6869a66169ed134614f35063bf3893e069b2d424083521c"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_header_builder.v",
+      "sha256": "e419441eac76eb81b4cc7ebc0b31108f3b19fd09c0ee4a1f2d3668858a3b1ef1"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_redundant_tx_fanout.v",
+      "sha256": "59a64cec6b3ceb29fddc748a2bec3c556abb26511778c71534af356777bff062"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_rx_frame_manager.v",
+      "sha256": "12528727c0c2066539bcb7e50e4d9f1324c50247298d9fc11e461a8a33badbe4"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_rx_ingress_guard.v",
+      "sha256": "e1e848b2598b540a1d42472898723989cd85cc9b6ccb4574a078e8658144dbc4"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_rx_parser.v",
+      "sha256": "c6638f5ef65bd23245005dd19fad09e4357177dc52cbf494d55ae8524e90a44b"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_rx_sequence_table.v",
+      "sha256": "36ff7eeabddb6fafb298592d7f6f582dd9aa8eb546c7cbaacc0a0a2507da7697"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_sync_fifo.v",
+      "sha256": "8522f6ce628c4b945ecb243bd8816edf04be22be520b6c050392304866825408"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\AFDX_top.v",
+      "sha256": "67a32451416d44f180e64ac24ae05ea343877e86f88ec9d5ca9dc350900a758a"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_tx_frame_manager.v",
+      "sha256": "759d7af2080e0c470d4b472529e4502a75e05e270e495c1f9ead3cfabc2c068c"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_tx_frame_scheduler.v",
+      "sha256": "620e28192fc03461d6a27167e509c1d20d3eb4c94a5ccf4033b757ea9d564948"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_tx_packet_output.v",
+      "sha256": "78082e5b49dbc863561afd4db53b9d6f9ed2aaff97b2a91aa2cf9c4aca3ada57"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\afdx_tx_switch_stream.v",
+      "sha256": "937c9c5c945d2ac2d0e098bab9596f2d1eee62130aaadc25d35a35c39f205884"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\bag_timer.v",
+      "sha256": "40929296111d1e7823fbded7da0ebb497ae47b228e2d9981e7a76dd2f43e45d5"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\fifo_ip_tx.v",
+      "sha256": "4036ee134fa54b054a700910a7185b948ab2dac1d1e4c5af18746b50f6f9bb62"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\frame_descriptor_fifo.v",
+      "sha256": "a6f71cef90aaebeae4150f702b19b3d04262cae869aca6bcc4f746627cb4fcfc"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\packet_builder.v",
+      "sha256": "dacf2aff60e3ae670de94bb57349a01ae2664a83f1e894c8c4e1c0537705da2a"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\packet_decoder.v",
+      "sha256": "8834c185a4c86e3c39fbc8f25a76d191d9cfa97049d7e4c98834ec0e914b39da"
+    },
+    {
+      "path": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\AFDX_v3.srcs\\sources_1\\new\\sequence_counter.v",
+      "sha256": "5863c886342b0ddfb3d4317932a3824e3d92f00e0a93efffc9f11a6a07c77298"
+    }
+  ],
+  "errors": []
+}

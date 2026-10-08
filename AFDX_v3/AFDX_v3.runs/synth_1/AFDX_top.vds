@@ -1,0 +1,1043 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Wed Oct  7 10:05:11 2026
+# Process ID: 21704
+# Current directory: C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.runs/synth_1
+# Command line: vivado.exe -log AFDX_top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source AFDX_top.tcl
+# Log file: C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.runs/synth_1/AFDX_top.vds
+# Journal file: C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source AFDX_top.tcl -notrace
+Command: synth_design -top AFDX_top -part xc7z010clg400-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z010'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z010'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 6696 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 432.477 ; gain = 99.879
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'AFDX_top' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/AFDX_top.v:5]
+	Parameter BAG_CYCLES bound to: 12500 - type: integer 
+	Parameter DEDUP_WINDOW_CYCLES bound to: 100000 - type: integer 
+	Parameter HISTORY_DEPTH bound to: 64 - type: integer 
+	Parameter RX_IDLE_TIMEOUT_CYCLES bound to: 12500 - type: integer 
+	Parameter TX_IDLE_TIMEOUT_CYCLES bound to: 12500 - type: integer 
+	Parameter DEST_MAC bound to: 48'b000000110000000000000000000000000000000100000001 
+	Parameter SRC_MAC bound to: 48'b000000100000000000000000000000000000000000000001 
+	Parameter SRC_IP bound to: -1062731775 - type: integer 
+	Parameter DEST_IP bound to: -1062731773 - type: integer 
+	Parameter SRC_PORT bound to: 16'b0010011100010001 
+	Parameter DEST_PORT bound to: 16'b0100111000100011 
+	Parameter LOCAL_DEST_IP bound to: -1062731773 - type: integer 
+	Parameter LOCAL_DEST_PORT bound to: 16'b0100111000100011 
+	Parameter ACCEPT_ANY_DEST bound to: 1'b0 
+INFO: [Synth 8-6157] synthesizing module 'afdx_es_stats' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_es_stats.v:4]
+	Parameter APP_IDLE_TIMEOUT_CYCLES bound to: 12500 - type: integer 
+	Parameter COUNTER_COUNT bound to: 36 - type: integer 
+	Parameter TIMEOUT_WIDTH bound to: 14 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'afdx_es_stats' (1#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_es_stats.v:4]
+INFO: [Synth 8-6157] synthesizing module 'afdx_es_tx' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_es_tx.v:4]
+	Parameter BAG_CYCLES bound to: 12500 - type: integer 
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter DESCRIPTOR_FIFO_DEPTH bound to: 4 - type: integer 
+	Parameter DESCRIPTOR_POINTER_WIDTH bound to: 2 - type: integer 
+	Parameter DEST_MAC bound to: 48'b000000110000000000000000000000000000000100000001 
+	Parameter SRC_MAC bound to: 48'b000000100000000000000000000000000000000000000001 
+	Parameter SRC_IP bound to: -1062731775 - type: integer 
+	Parameter DEST_IP bound to: -1062731773 - type: integer 
+	Parameter SRC_PORT bound to: 16'b0010011100010001 
+	Parameter DEST_PORT bound to: 16'b0100111000100011 
+INFO: [Synth 8-6157] synthesizing module 'afdx_tx_frame_manager' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_frame_manager.v:5]
+	Parameter BAG_CYCLES bound to: 12500 - type: integer 
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter DESCRIPTOR_FIFO_DEPTH bound to: 4 - type: integer 
+	Parameter DESCRIPTOR_POINTER_WIDTH bound to: 2 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'fifo_ip_tx' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/fifo_ip_tx.v:3]
+INFO: [Synth 8-6157] synthesizing module 'afdx_sync_fifo' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_sync_fifo.v:5]
+	Parameter DATA_WIDTH bound to: 9 - type: integer 
+	Parameter ADDRESS_WIDTH bound to: 11 - type: integer 
+	Parameter DEPTH bound to: 2048 - type: integer 
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_sync_fifo.v:17]
+INFO: [Synth 8-6155] done synthesizing module 'afdx_sync_fifo' (2#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_sync_fifo.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'fifo_ip_tx' (3#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/fifo_ip_tx.v:3]
+INFO: [Synth 8-6157] synthesizing module 'afdx_tx_frame_scheduler' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_frame_scheduler.v:5]
+	Parameter BAG_CYCLES bound to: 12500 - type: integer 
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter DESCRIPTOR_FIFO_DEPTH bound to: 4 - type: integer 
+	Parameter DESCRIPTOR_POINTER_WIDTH bound to: 2 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'frame_descriptor_fifo' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/frame_descriptor_fifo.v:6]
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter FIFO_DEPTH bound to: 4 - type: integer 
+	Parameter POINTER_WIDTH bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'frame_descriptor_fifo' (4#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/frame_descriptor_fifo.v:6]
+INFO: [Synth 8-6157] synthesizing module 'bag_timer' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/bag_timer.v:3]
+	Parameter BAG_CYCLES bound to: 12500 - type: integer 
+	Parameter BAG_COUNTER_WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'bag_timer' (5#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/bag_timer.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'afdx_tx_frame_scheduler' (6#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_frame_scheduler.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'afdx_tx_frame_manager' (7#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_frame_manager.v:5]
+INFO: [Synth 8-6157] synthesizing module 'afdx_tx_packet_output' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_packet_output.v:4]
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter DEST_MAC bound to: 48'b000000110000000000000000000000000000000100000001 
+	Parameter SRC_MAC bound to: 48'b000000100000000000000000000000000000000000000001 
+	Parameter SRC_IP bound to: -1062731775 - type: integer 
+	Parameter DEST_IP bound to: -1062731773 - type: integer 
+	Parameter SRC_PORT bound to: 16'b0010011100010001 
+	Parameter DEST_PORT bound to: 16'b0100111000100011 
+INFO: [Synth 8-6157] synthesizing module 'sequence_counter' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/sequence_counter.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'sequence_counter' (8#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/sequence_counter.v:3]
+INFO: [Synth 8-6157] synthesizing module 'packet_builder' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/packet_builder.v:2]
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter DEST_MAC bound to: 48'b000000110000000000000000000000000000000100000001 
+	Parameter SRC_MAC bound to: 48'b000000100000000000000000000000000000000000000001 
+	Parameter SRC_IP bound to: -1062731775 - type: integer 
+	Parameter DEST_IP bound to: -1062731773 - type: integer 
+	Parameter SRC_PORT bound to: 16'b0010011100010001 
+	Parameter DEST_PORT bound to: 16'b0100111000100011 
+INFO: [Synth 8-6157] synthesizing module 'afdx_header_builder' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_header_builder.v:3]
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter DEST_MAC bound to: 48'b000000110000000000000000000000000000000100000001 
+	Parameter SRC_MAC bound to: 48'b000000100000000000000000000000000000000000000001 
+	Parameter SRC_IP bound to: -1062731775 - type: integer 
+	Parameter DEST_IP bound to: -1062731773 - type: integer 
+	Parameter SRC_PORT bound to: 16'b0010011100010001 
+	Parameter DEST_PORT bound to: 16'b0100111000100011 
+INFO: [Synth 8-6155] done synthesizing module 'afdx_header_builder' (9#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_header_builder.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'packet_builder' (10#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/packet_builder.v:2]
+INFO: [Synth 8-6157] synthesizing module 'afdx_tx_switch_stream' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_switch_stream.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'afdx_tx_switch_stream' (11#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_switch_stream.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'afdx_tx_packet_output' (12#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_packet_output.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'afdx_es_tx' (13#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_es_tx.v:4]
+INFO: [Synth 8-6157] synthesizing module 'afdx_redundant_tx_fanout' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_redundant_tx_fanout.v:5]
+	Parameter MAX_FRAME_BYTES bound to: 1514 - type: integer 
+	Parameter POINTER_WIDTH bound to: 11 - type: integer 
+	Parameter BAG_CYCLES bound to: 12500 - type: integer 
+	Parameter BAG_WIDTH bound to: 14 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'afdx_redundant_tx_fanout' (14#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_redundant_tx_fanout.v:5]
+INFO: [Synth 8-6157] synthesizing module 'afdx_es_rx' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_es_rx.v:4]
+	Parameter LOCAL_DEST_IP bound to: -1062731773 - type: integer 
+	Parameter LOCAL_DEST_PORT bound to: 16'b0100111000100011 
+	Parameter ACCEPT_ANY_DEST bound to: 1'b0 
+	Parameter RX_IDLE_TIMEOUT_CYCLES bound to: 12500 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'afdx_rx_ingress_guard' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_ingress_guard.v:5]
+	Parameter MAX_FRAME_BYTES bound to: 1514 - type: integer 
+	Parameter MIN_FRAME_BYTES bound to: 60 - type: integer 
+	Parameter IDLE_TIMEOUT_CYCLES bound to: 12500 - type: integer 
+	Parameter POINTER_WIDTH bound to: 11 - type: integer 
+	Parameter TIMEOUT_WIDTH bound to: 14 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'afdx_rx_ingress_guard' (15#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_ingress_guard.v:5]
+INFO: [Synth 8-6157] synthesizing module 'packet_decoder' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/packet_decoder.v:5]
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter VL_INDEX_WIDTH bound to: 12 - type: integer 
+	Parameter LOCAL_DEST_IP bound to: -1062731773 - type: integer 
+	Parameter LOCAL_DEST_PORT bound to: 16'b0100111000100011 
+	Parameter ACCEPT_ANY_DEST bound to: 1'b0 
+INFO: [Synth 8-6157] synthesizing module 'afdx_rx_parser' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_parser.v:5]
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter LOCAL_DEST_IP bound to: -1062731773 - type: integer 
+	Parameter LOCAL_DEST_PORT bound to: 16'b0100111000100011 
+	Parameter ACCEPT_ANY_DEST bound to: 1'b0 
+	Parameter MIN_UDP_LENGTH bound to: 16'b0000000000011010 
+	Parameter MAX_UDP_LENGTH bound to: 16'b0000010111001000 
+	Parameter MAX_CORE_LENGTH bound to: 16'b0000010111101010 
+INFO: [Synth 8-6155] done synthesizing module 'afdx_rx_parser' (16#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_parser.v:5]
+INFO: [Synth 8-6157] synthesizing module 'afdx_rx_sequence_table' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_sequence_table.v:11]
+	Parameter VL_INDEX_WIDTH bound to: 12 - type: integer 
+	Parameter VL_TABLE_DEPTH bound to: 4096 - type: integer 
+	Parameter CHECK_IDLE bound to: 2'b00 
+	Parameter CHECK_READ bound to: 2'b01 
+	Parameter CHECK_COMPARE bound to: 2'b10 
+INFO: [Synth 8-6155] done synthesizing module 'afdx_rx_sequence_table' (17#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_sequence_table.v:11]
+INFO: [Synth 8-6155] done synthesizing module 'packet_decoder' (18#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/packet_decoder.v:5]
+INFO: [Synth 8-6157] synthesizing module 'afdx_rx_frame_manager' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_frame_manager.v:6]
+	Parameter FRAME_LENGTH_WIDTH bound to: 11 - type: integer 
+	Parameter PAYLOAD_FIFO_DEPTH bound to: 4096 - type: integer 
+	Parameter PAYLOAD_POINTER_WIDTH bound to: 12 - type: integer 
+	Parameter DESCRIPTOR_FIFO_DEPTH bound to: 8 - type: integer 
+	Parameter DESCRIPTOR_POINTER_WIDTH bound to: 3 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'afdx_rx_frame_manager' (19#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_frame_manager.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'afdx_es_rx' (20#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_es_rx.v:4]
+INFO: [Synth 8-6157] synthesizing module 'afdx_ab_frame_selector' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_ab_frame_selector.v:10]
+	Parameter MAX_FRAME_BYTES bound to: 1471 - type: integer 
+	Parameter POINTER_WIDTH bound to: 11 - type: integer 
+	Parameter DEDUP_WINDOW_CYCLES bound to: 100000 - type: integer 
+	Parameter HISTORY_DEPTH bound to: 64 - type: integer 
+	Parameter HISTORY_INDEX_WIDTH bound to: 6 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'afdx_ab_frame_selector' (21#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_ab_frame_selector.v:10]
+INFO: [Synth 8-6155] done synthesizing module 'AFDX_top' (22#1) [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/AFDX_top.v:5]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 502.793 ; gain = 170.195
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 502.793 ; gain = 170.195
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 502.793 ; gain = 170.195
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7z010clg400-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/constraints/mac_stream_80ns.xdc]
+Finished Parsing XDC File [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/constraints/mac_stream_80ns.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 858.461 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 859.188 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.028 . Memory (MB): peak = 859.188 ; gain = 0.727
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 859.188 ; gain = 526.590
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z010clg400-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 859.188 ; gain = 526.590
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 859.188 ; gain = 526.590
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_sync_fifo.v:37]
+INFO: [Synth 8-4471] merging register 'frame_transmit_done_reg' into 'builder_last_reg' [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/packet_builder.v:314]
+INFO: [Synth 8-5546] ROM "capture_count" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "discard" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ether_type" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ip_version_ihl" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ip_total_length" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "ip_protocol" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "source_ip" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "destination_ip" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "udp_destination_port" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "udp_length" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "udp_checksum_field" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5544] ROM "stored_entry_valid" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5546] ROM "sequence_check_ready" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-802] inferred FSM for state register 'sequence_check_state_reg' in module 'afdx_rx_sequence_table'
+WARNING: [Synth 8-6014] Unused sequential element sequence_check_address_reg_rep was removed.  [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_sequence_table.v:90]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_frame_manager.v:184]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_frame_manager.v:219]
+INFO: [Synth 8-5546] ROM "app_rx_frame_active" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "app_rx_frame_active" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5544] ROM "stored_payload_byte_count" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "descriptor_count" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5546] ROM "a_count" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "b_count" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "a_discard" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "b_discard" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "search_index" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "search_active" won't be mapped to RAM because it is too sparse
+WARNING: [Synth 8-6014] Unused sequential element search_index_reg_rep was removed.  [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_ab_frame_selector.v:55]
+WARNING: [Synth 8-6014] Unused sequential element search_index_reg_rep was removed.  [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_ab_frame_selector.v:55]
+WARNING: [Synth 8-6014] Unused sequential element out_pointer_reg_rep was removed.  [C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_ab_frame_selector.v:71]
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+              CHECK_IDLE |                              001 |                               00
+              CHECK_READ |                              010 |                               01
+           CHECK_COMPARE |                              100 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'sequence_check_state_reg' using encoding 'one-hot' in module 'afdx_rx_sequence_table'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 859.188 ; gain = 526.590
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 1     
+	   3 Input     32 Bit       Adders := 4     
+	   2 Input     19 Bit       Adders := 1     
+	   2 Input     17 Bit       Adders := 9     
+	   3 Input     17 Bit       Adders := 12    
+	   2 Input     16 Bit       Adders := 13    
+	   2 Input     14 Bit       Adders := 5     
+	   2 Input     13 Bit       Adders := 7     
+	   4 Input     13 Bit       Adders := 2     
+	   2 Input     12 Bit       Adders := 9     
+	   2 Input     11 Bit       Adders := 27    
+	   2 Input      8 Bit       Adders := 3     
+	   2 Input      6 Bit       Adders := 3     
+	   2 Input      5 Bit       Adders := 2     
+	   2 Input      4 Bit       Adders := 2     
+	   2 Input      3 Bit       Adders := 7     
+	   2 Input      2 Bit       Adders := 6     
+	   2 Input      1 Bit       Adders := 2     
++---Registers : 
+	               64 Bit    Registers := 1     
+	               48 Bit    Registers := 2     
+	               32 Bit    Registers := 7     
+	               17 Bit    Registers := 4     
+	               16 Bit    Registers := 18    
+	               14 Bit    Registers := 5     
+	               13 Bit    Registers := 4     
+	               12 Bit    Registers := 6     
+	               11 Bit    Registers := 24    
+	                9 Bit    Registers := 1     
+	                8 Bit    Registers := 23    
+	                6 Bit    Registers := 5     
+	                5 Bit    Registers := 1     
+	                4 Bit    Registers := 2     
+	                3 Bit    Registers := 1     
+	                2 Bit    Registers := 2     
+	                1 Bit    Registers := 67    
++---RAMs : 
+	              64K Bit         RAMs := 2     
+	              32K Bit         RAMs := 4     
+	              18K Bit         RAMs := 1     
+	              11K Bit         RAMs := 5     
+	               4K Bit         RAMs := 2     
+	             1024 Bit         RAMs := 1     
+	              512 Bit         RAMs := 1     
+	              128 Bit         RAMs := 2     
+	               88 Bit         RAMs := 2     
+	               64 Bit         RAMs := 2     
+	               44 Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     64 Bit        Muxes := 9     
+	   2 Input     48 Bit        Muxes := 2     
+	   2 Input     32 Bit        Muxes := 13    
+	  23 Input     32 Bit        Muxes := 4     
+	   2 Input     16 Bit        Muxes := 24    
+	  23 Input     16 Bit        Muxes := 10    
+	  21 Input     16 Bit        Muxes := 10    
+	   2 Input     14 Bit        Muxes := 9     
+	   2 Input     13 Bit        Muxes := 8     
+	   2 Input     12 Bit        Muxes := 10    
+	   2 Input     11 Bit        Muxes := 44    
+	   2 Input      8 Bit        Muxes := 10    
+	  43 Input      8 Bit        Muxes := 1     
+	   2 Input      6 Bit        Muxes := 6     
+	   2 Input      5 Bit        Muxes := 2     
+	   3 Input      3 Bit        Muxes := 1     
+	   3 Input      2 Bit        Muxes := 7     
+	   2 Input      1 Bit        Muxes := 205   
+	   3 Input      1 Bit        Muxes := 16    
+	  22 Input      1 Bit        Muxes := 4     
+	   5 Input      1 Bit        Muxes := 2     
+	   4 Input      1 Bit        Muxes := 2     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module afdx_es_stats 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     14 Bit       Adders := 1     
+	   2 Input     11 Bit       Adders := 1     
++---Registers : 
+	               14 Bit    Registers := 1     
+	               11 Bit    Registers := 1     
+	                1 Bit    Registers := 3     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 1     
+	   2 Input     14 Bit        Muxes := 1     
+	   2 Input     11 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 40    
+Module afdx_sync_fifo 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     11 Bit       Adders := 3     
++---Registers : 
+	               11 Bit    Registers := 2     
+	                9 Bit    Registers := 1     
++---RAMs : 
+	              18K Bit         RAMs := 1     
++---Muxes : 
+	   3 Input      2 Bit        Muxes := 1     
+	   3 Input      1 Bit        Muxes := 1     
+Module fifo_ip_tx 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input     11 Bit        Muxes := 1     
+Module frame_descriptor_fifo 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      3 Bit       Adders := 2     
+	   2 Input      2 Bit       Adders := 2     
++---Registers : 
+	                3 Bit    Registers := 1     
++---RAMs : 
+	               44 Bit         RAMs := 1     
++---Muxes : 
+	   3 Input      3 Bit        Muxes := 1     
+	   3 Input      1 Bit        Muxes := 1     
+Module bag_timer 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 1     
++---Registers : 
+	               32 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 2     
+Module afdx_tx_frame_manager 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     11 Bit       Adders := 2     
++---Registers : 
+	               11 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     11 Bit        Muxes := 1     
+Module sequence_counter 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      8 Bit       Adders := 1     
++---Registers : 
+	                8 Bit    Registers := 1     
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 1     
+Module afdx_header_builder 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     19 Bit       Adders := 1     
+	   2 Input     17 Bit       Adders := 1     
+	   2 Input     16 Bit       Adders := 1     
+	   2 Input     13 Bit       Adders := 1     
+	   2 Input     12 Bit       Adders := 1     
++---Muxes : 
+	   2 Input     11 Bit        Muxes := 1     
+	  43 Input      8 Bit        Muxes := 1     
+Module packet_builder 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      6 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 2     
++---Registers : 
+	               11 Bit    Registers := 1     
+	                8 Bit    Registers := 2     
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 1     
+	                1 Bit    Registers := 9     
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 3     
+	   2 Input      6 Bit        Muxes := 2     
+	   2 Input      5 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 9     
+Module afdx_tx_switch_stream 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input      3 Bit       Adders := 1     
+	   2 Input      2 Bit       Adders := 4     
+	   2 Input      1 Bit       Adders := 2     
++---Registers : 
+	                8 Bit    Registers := 2     
+	                2 Bit    Registers := 2     
+	                1 Bit    Registers := 4     
++---Muxes : 
+	   2 Input      8 Bit        Muxes := 1     
+	   3 Input      2 Bit        Muxes := 2     
+	   3 Input      1 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 1     
+Module afdx_tx_packet_output 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 2     
+Module afdx_redundant_tx_fanout 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     14 Bit       Adders := 2     
+	   2 Input     11 Bit       Adders := 5     
++---Registers : 
+	               14 Bit    Registers := 2     
+	               11 Bit    Registers := 4     
+	                1 Bit    Registers := 4     
++---RAMs : 
+	              11K Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     14 Bit        Muxes := 4     
+	   2 Input     11 Bit        Muxes := 5     
+	   2 Input      1 Bit        Muxes := 19    
+Module afdx_rx_ingress_guard 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     14 Bit       Adders := 1     
+	   2 Input     11 Bit       Adders := 3     
++---Registers : 
+	               14 Bit    Registers := 1     
+	               11 Bit    Registers := 2     
+	                1 Bit    Registers := 3     
++---RAMs : 
+	              11K Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     14 Bit        Muxes := 2     
+	   2 Input     11 Bit        Muxes := 11    
+	   2 Input      1 Bit        Muxes := 14    
+Module afdx_rx_parser 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     17 Bit       Adders := 4     
+	   3 Input     17 Bit       Adders := 6     
+	   2 Input     16 Bit       Adders := 6     
+	   2 Input     13 Bit       Adders := 1     
+	   2 Input     12 Bit       Adders := 1     
+	   2 Input     11 Bit       Adders := 1     
++---Registers : 
+	               48 Bit    Registers := 1     
+	               32 Bit    Registers := 2     
+	               17 Bit    Registers := 2     
+	               16 Bit    Registers := 5     
+	               12 Bit    Registers := 1     
+	               11 Bit    Registers := 1     
+	                8 Bit    Registers := 4     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input     48 Bit        Muxes := 1     
+	  23 Input     32 Bit        Muxes := 2     
+	   2 Input     32 Bit        Muxes := 4     
+	   2 Input     16 Bit        Muxes := 11    
+	  23 Input     16 Bit        Muxes := 5     
+	  21 Input     16 Bit        Muxes := 5     
+	   2 Input     12 Bit        Muxes := 2     
+	   2 Input     11 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 10    
+	  22 Input      1 Bit        Muxes := 2     
+Module afdx_rx_sequence_table 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     12 Bit       Adders := 1     
+	   2 Input      8 Bit       Adders := 1     
++---Registers : 
+	               16 Bit    Registers := 1     
+	               12 Bit    Registers := 1     
+	                8 Bit    Registers := 1     
+	                1 Bit    Registers := 6     
++---RAMs : 
+	              64K Bit         RAMs := 1     
+	              32K Bit         RAMs := 1     
+	               4K Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     12 Bit        Muxes := 2     
+	   2 Input      8 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 7     
+	   3 Input      1 Bit        Muxes := 5     
+Module packet_decoder 
+Detailed RTL Component Info : 
++---Registers : 
+	               16 Bit    Registers := 1     
+	               11 Bit    Registers := 1     
+	                8 Bit    Registers := 1     
+Module afdx_rx_frame_manager 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     13 Bit       Adders := 2     
+	   4 Input     13 Bit       Adders := 1     
+	   2 Input     12 Bit       Adders := 2     
+	   2 Input     11 Bit       Adders := 1     
+	   2 Input      4 Bit       Adders := 1     
+	   2 Input      3 Bit       Adders := 2     
++---Registers : 
+	               16 Bit    Registers := 1     
+	               13 Bit    Registers := 2     
+	               12 Bit    Registers := 1     
+	               11 Bit    Registers := 1     
+	                8 Bit    Registers := 2     
+	                4 Bit    Registers := 1     
+	                1 Bit    Registers := 6     
++---RAMs : 
+	              32K Bit         RAMs := 1     
+	              128 Bit         RAMs := 1     
+	               88 Bit         RAMs := 1     
+	               64 Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     13 Bit        Muxes := 4     
+	   2 Input     12 Bit        Muxes := 1     
+	   2 Input     11 Bit        Muxes := 2     
+	   3 Input      2 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 12    
+	   5 Input      1 Bit        Muxes := 1     
+	   3 Input      1 Bit        Muxes := 1     
+	   4 Input      1 Bit        Muxes := 1     
+Module afdx_ab_frame_selector 
+Detailed RTL Component Info : 
++---Adders : 
+	   3 Input     32 Bit       Adders := 4     
+	   2 Input     11 Bit       Adders := 6     
+	   2 Input      6 Bit       Adders := 2     
++---Registers : 
+	               64 Bit    Registers := 1     
+	               32 Bit    Registers := 2     
+	               16 Bit    Registers := 2     
+	               11 Bit    Registers := 5     
+	                8 Bit    Registers := 2     
+	                6 Bit    Registers := 4     
+	                1 Bit    Registers := 10    
++---RAMs : 
+	              11K Bit         RAMs := 2     
+	             1024 Bit         RAMs := 1     
+	              512 Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     64 Bit        Muxes := 9     
+	   2 Input     32 Bit        Muxes := 2     
+	   2 Input     16 Bit        Muxes := 2     
+	   2 Input     11 Bit        Muxes := 5     
+	   2 Input      8 Bit        Muxes := 3     
+	   2 Input      6 Bit        Muxes := 4     
+	   2 Input      1 Bit        Muxes := 47    
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 80 (col length:40)
+BRAMs: 120 (col length: RAMB18 40 RAMB36 20)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+Warning: Parallel synthesis criteria is not met 
+INFO: [Synth 8-5546] ROM "u_sequence_table/sequence_check_ready" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "app_rx_frame_active" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "u_sequence_table/sequence_check_ready" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "app_rx_frame_active" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "b_count" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "b_discard" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "a_count" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "a_discard" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "u_fanout/capture_count" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "u_fanout/discard" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-3886] merging instance 'u_merge/sweep_index_reg_rep[0]' (FDC) to 'u_merge/sweep_index_reg[0]'
+INFO: [Synth 8-3886] merging instance 'u_merge/sweep_index_reg_rep[1]' (FDC) to 'u_merge/sweep_index_reg[1]'
+INFO: [Synth 8-3886] merging instance 'u_merge/sweep_index_reg_rep[2]' (FDC) to 'u_merge/sweep_index_reg[2]'
+INFO: [Synth 8-3886] merging instance 'u_merge/sweep_index_reg_rep[3]' (FDC) to 'u_merge/sweep_index_reg[3]'
+INFO: [Synth 8-3886] merging instance 'u_merge/sweep_index_reg_rep[4]' (FDC) to 'u_merge/sweep_index_reg[4]'
+INFO: [Synth 8-3886] merging instance 'u_merge/sweep_index_reg_rep[5]' (FDC) to 'u_merge/sweep_index_reg[5]'
+INFO: [Synth 8-3886] merging instance 'u_merge/active_slot_reg_rep[0]' (FDCE) to 'u_merge/active_slot_reg[0]'
+INFO: [Synth 8-3886] merging instance 'u_merge/active_slot_reg_rep[1]' (FDCE) to 'u_merge/active_slot_reg[1]'
+INFO: [Synth 8-3886] merging instance 'u_merge/active_slot_reg_rep[2]' (FDCE) to 'u_merge/active_slot_reg[2]'
+INFO: [Synth 8-3886] merging instance 'u_merge/active_slot_reg_rep[3]' (FDCE) to 'u_merge/active_slot_reg[3]'
+INFO: [Synth 8-3886] merging instance 'u_merge/active_slot_reg_rep[4]' (FDCE) to 'u_merge/active_slot_reg[4]'
+INFO: [Synth 8-3886] merging instance 'u_merge/active_slot_reg_rep[5]' (FDCE) to 'u_merge/active_slot_reg[5]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[0]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[0]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[1]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[1]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[2]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[2]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[3]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[3]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[4]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[4]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[5]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[5]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[6]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[6]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[7]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[7]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[8]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[8]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[9]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[9]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[10]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[10]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_packet_decoder/u_sequence_table/sequence_check_address_reg[11]' (FDCE) to 'afdx_es_rx:/u_packet_decoder/u_sequence_table/checked_vl_id_reg[11]'
+INFO: [Synth 8-3886] merging instance 'u_merge/search_index_reg_rep[0]' (FDCE) to 'u_merge/search_index_reg[0]'
+INFO: [Synth 8-3886] merging instance 'u_merge/search_index_reg_rep[1]' (FDCE) to 'u_merge/search_index_reg[1]'
+INFO: [Synth 8-3886] merging instance 'u_merge/search_index_reg_rep[2]' (FDCE) to 'u_merge/search_index_reg[2]'
+INFO: [Synth 8-3886] merging instance 'u_merge/search_index_reg_rep[3]' (FDCE) to 'u_merge/search_index_reg[3]'
+INFO: [Synth 8-3886] merging instance 'u_merge/search_index_reg_rep[4]' (FDCE) to 'u_merge/search_index_reg[4]'
+INFO: [Synth 8-3886] merging instance 'u_merge/search_index_reg_rep[5]' (FDCE) to 'u_merge/search_index_reg[5]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[5]' (FDCE) to 'u_fanout/b_pointer_reg[5]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[4]' (FDCE) to 'u_fanout/b_pointer_reg[4]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[3]' (FDCE) to 'u_fanout/b_pointer_reg[3]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[2]' (FDCE) to 'u_fanout/b_pointer_reg[2]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[1]' (FDCE) to 'u_fanout/b_pointer_reg[1]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[0]' (FDCE) to 'u_fanout/b_pointer_reg[0]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[0]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[0]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[1]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[1]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[2]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[2]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[3]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[3]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[4]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[4]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[5]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[5]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[5]' (FDCE) to 'u_fanout/a_pointer_reg[5]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[4]' (FDCE) to 'u_fanout/a_pointer_reg[4]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[3]' (FDCE) to 'u_fanout/a_pointer_reg[3]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[2]' (FDCE) to 'u_fanout/a_pointer_reg[2]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[1]' (FDCE) to 'u_fanout/a_pointer_reg[1]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[0]' (FDCE) to 'u_fanout/a_pointer_reg[0]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[5]' (FDCE) to 'u_merge/out_pointer_reg[5]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[4]' (FDCE) to 'u_merge/out_pointer_reg[4]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[3]' (FDCE) to 'u_merge/out_pointer_reg[3]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[2]' (FDCE) to 'u_merge/out_pointer_reg[2]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[1]' (FDCE) to 'u_merge/out_pointer_reg[1]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[0]' (FDCE) to 'u_merge/out_pointer_reg[0]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[9]' (FDCE) to 'u_fanout/b_pointer_reg[9]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[10]' (FDCE) to 'u_fanout/b_pointer_reg[10]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[8]' (FDCE) to 'u_fanout/b_pointer_reg[8]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[7]' (FDCE) to 'u_fanout/b_pointer_reg[7]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/b_pointer_reg_rep[6]' (FDCE) to 'u_fanout/b_pointer_reg[6]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[6]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[6]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[7]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[7]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[8]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[8]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[9]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[9]'
+INFO: [Synth 8-3886] merging instance 'afdx_es_rx:/u_ingress_guard/read_pointer_reg_rep[10]' (FDCE) to 'afdx_es_rx:/u_ingress_guard/read_pointer_reg[10]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[9]' (FDCE) to 'u_fanout/a_pointer_reg[9]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[10]' (FDCE) to 'u_fanout/a_pointer_reg[10]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[8]' (FDCE) to 'u_fanout/a_pointer_reg[8]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[7]' (FDCE) to 'u_fanout/a_pointer_reg[7]'
+INFO: [Synth 8-3886] merging instance 'u_fanout/a_pointer_reg_rep[6]' (FDCE) to 'u_fanout/a_pointer_reg[6]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[6]' (FDCE) to 'u_merge/out_pointer_reg[6]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[7]' (FDCE) to 'u_merge/out_pointer_reg[7]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[8]' (FDCE) to 'u_merge/out_pointer_reg[8]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[9]' (FDCE) to 'u_merge/out_pointer_reg[9]'
+INFO: [Synth 8-3886] merging instance 'u_merge/out_pointer_reg_rep[10]' (FDCE) to 'u_merge/out_pointer_reg[10]'
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:25 ; elapsed = 00:00:28 . Memory (MB): peak = 859.188 ; gain = 526.590
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Preliminary Mapping  Report (see note below)
++-----------------------+--------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name            | RTL Object                                                   | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++-----------------------+--------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|afdx_sync_fifo:        | memory_reg                                                   | 2 K x 9(READ_FIRST)    | W |   | 2 K x 9(WRITE_FIRST)   |   | R | Port A and B     | 1      | 0      | 
+|afdx_es_rx:            | u_packet_decoder/u_sequence_table/vl_tag_memory_reg          | 4 K x 16(READ_FIRST)   | W |   | 4 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 
+|afdx_es_rx:            | u_packet_decoder/u_sequence_table/sequence_number_memory_reg | 4 K x 8(READ_FIRST)    | W |   | 4 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
+|afdx_rx_frame_manager: | payload_memory_reg                                           | 4 K x 8(READ_FIRST)    | W |   | 4 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
+|afdx_es_rx:            | u_packet_decoder/u_sequence_table/vl_tag_memory_reg          | 4 K x 16(READ_FIRST)   | W |   | 4 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 
+|afdx_es_rx:            | u_packet_decoder/u_sequence_table/sequence_number_memory_reg | 4 K x 8(READ_FIRST)    | W |   | 4 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
+|afdx_rx_frame_manager: | payload_memory_reg                                           | 4 K x 8(READ_FIRST)    | W |   | 4 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
++-----------------------+--------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+
+Distributed RAM: Preliminary Mapping  Report (see note below)
++------------+---------------------------------------------------------------------------------------------+-----------+----------------------+------------------------------+
+|Module Name | RTL Object                                                                                  | Inference | Size (Depth x Width) | Primitives                   | 
++------------+---------------------------------------------------------------------------------------------+-----------+----------------------+------------------------------+
+|afdx_es_rx: | u_ingress_guard/memory_reg                                                                  | Implied   | 2 K x 8              | RAM64X1D x 48  RAM64M x 48   | 
+|afdx_es_rx: | u_packet_decoder/u_sequence_table/entry_valid_memory_reg                                    | Implied   | 4 K x 1              | RAM128X1D x 32               | 
+|afdx_es_rx: | u_frame_manager/descriptor_length_memory_reg                                                | Implied   | 8 x 11               | RAM32M x 2                   | 
+|afdx_es_rx: | u_frame_manager/descriptor_vl_memory_reg                                                    | Implied   | 8 x 16               | RAM32M x 3                   | 
+|afdx_es_rx: | u_frame_manager/descriptor_sn_memory_reg                                                    | Implied   | 8 x 8                | RAM32M x 2                   | 
+|afdx_es_rx: | u_ingress_guard/memory_reg                                                                  | Implied   | 2 K x 8              | RAM64X1D x 48  RAM64M x 48   | 
+|afdx_es_rx: | u_packet_decoder/u_sequence_table/entry_valid_memory_reg                                    | Implied   | 4 K x 1              | RAM128X1D x 32               | 
+|afdx_es_rx: | u_frame_manager/descriptor_length_memory_reg                                                | Implied   | 8 x 11               | RAM32M x 2                   | 
+|afdx_es_rx: | u_frame_manager/descriptor_vl_memory_reg                                                    | Implied   | 8 x 16               | RAM32M x 3                   | 
+|afdx_es_rx: | u_frame_manager/descriptor_sn_memory_reg                                                    | Implied   | 8 x 8                | RAM32M x 2                   | 
+|u_merge     | history_time_reg                                                                            | Implied   | 64 x 32              | RAM64M x 33                  | 
+|u_merge     | history_vl_reg                                                                              | Implied   | 64 x 16              | RAM64M x 6                   | 
+|u_merge     | history_sn_reg                                                                              | Implied   | 64 x 8               | RAM64M x 3                   | 
+|u_merge     | b_memory_reg                                                                                | Implied   | 2 K x 8              | RAM64X1D x 46  RAM64M x 46   | 
+|u_merge     | a_memory_reg                                                                                | Implied   | 2 K x 8              | RAM64X1D x 46  RAM64M x 46   | 
+|AFDX_top    | u_tx/u_frame_manager/u_frame_scheduler/u_frame_descriptor_fifo/descriptor_length_memory_reg | Implied   | 4 x 11               | RAM32M x 2                   | 
+|AFDX_top    | u_fanout/memory_reg                                                                         | Implied   | 2 K x 8              | RAM64X1D x 96  RAM64M x 96   | 
++------------+---------------------------------------------------------------------------------------------+-----------+----------------------+------------------------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6837] The timing for the instance i_0/u_tx/u_frame_manager/u_payload_fifo/u_fifo_tx/memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_a/i_6/u_packet_decoder/u_sequence_table/vl_tag_memory_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_a/i_6/u_packet_decoder/u_sequence_table/vl_tag_memory_reg_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_a/i_8/u_packet_decoder/u_sequence_table/sequence_number_memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_a/i_100/u_frame_manager/payload_memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_b/i_6/u_packet_decoder/u_sequence_table/vl_tag_memory_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_b/i_6/u_packet_decoder/u_sequence_table/vl_tag_memory_reg_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_b/i_8/u_packet_decoder/u_sequence_table/sequence_number_memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_b/i_100/u_frame_manager/payload_memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:30 ; elapsed = 00:00:33 . Memory (MB): peak = 859.188 ; gain = 526.590
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:33 ; elapsed = 00:00:36 . Memory (MB): peak = 953.125 ; gain = 620.527
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Final Mapping  Report
++-----------------------+--------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name            | RTL Object                                                   | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++-----------------------+--------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|afdx_sync_fifo:        | memory_reg                                                   | 2 K x 9(READ_FIRST)    | W |   | 2 K x 9(WRITE_FIRST)   |   | R | Port A and B     | 1      | 0      | 
+|afdx_es_rx:            | u_packet_decoder/u_sequence_table/vl_tag_memory_reg          | 4 K x 16(READ_FIRST)   | W |   | 4 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 
+|afdx_es_rx:            | u_packet_decoder/u_sequence_table/sequence_number_memory_reg | 4 K x 8(READ_FIRST)    | W |   | 4 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
+|afdx_rx_frame_manager: | payload_memory_reg                                           | 4 K x 8(READ_FIRST)    | W |   | 4 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
+|afdx_es_rx:            | u_packet_decoder/u_sequence_table/vl_tag_memory_reg          | 4 K x 16(READ_FIRST)   | W |   | 4 K x 16(WRITE_FIRST)  |   | R | Port A and B     | 0      | 2      | 
+|afdx_es_rx:            | u_packet_decoder/u_sequence_table/sequence_number_memory_reg | 4 K x 8(READ_FIRST)    | W |   | 4 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
+|afdx_rx_frame_manager: | payload_memory_reg                                           | 4 K x 8(READ_FIRST)    | W |   | 4 K x 8(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
++-----------------------+--------------------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+
+Distributed RAM: Final Mapping  Report
++------------+---------------------------------------------------------------------------------------------+-----------+----------------------+------------------------------+
+|Module Name | RTL Object                                                                                  | Inference | Size (Depth x Width) | Primitives                   | 
++------------+---------------------------------------------------------------------------------------------+-----------+----------------------+------------------------------+
+|afdx_es_rx: | u_ingress_guard/memory_reg                                                                  | Implied   | 2 K x 8              | RAM64X1D x 48  RAM64M x 48   | 
+|afdx_es_rx: | u_packet_decoder/u_sequence_table/entry_valid_memory_reg                                    | Implied   | 4 K x 1              | RAM128X1D x 32               | 
+|afdx_es_rx: | u_frame_manager/descriptor_length_memory_reg                                                | Implied   | 8 x 11               | RAM32M x 2                   | 
+|afdx_es_rx: | u_frame_manager/descriptor_vl_memory_reg                                                    | Implied   | 8 x 16               | RAM32M x 3                   | 
+|afdx_es_rx: | u_frame_manager/descriptor_sn_memory_reg                                                    | Implied   | 8 x 8                | RAM32M x 2                   | 
+|afdx_es_rx: | u_ingress_guard/memory_reg                                                                  | Implied   | 2 K x 8              | RAM64X1D x 48  RAM64M x 48   | 
+|afdx_es_rx: | u_packet_decoder/u_sequence_table/entry_valid_memory_reg                                    | Implied   | 4 K x 1              | RAM128X1D x 32               | 
+|afdx_es_rx: | u_frame_manager/descriptor_length_memory_reg                                                | Implied   | 8 x 11               | RAM32M x 2                   | 
+|afdx_es_rx: | u_frame_manager/descriptor_vl_memory_reg                                                    | Implied   | 8 x 16               | RAM32M x 3                   | 
+|afdx_es_rx: | u_frame_manager/descriptor_sn_memory_reg                                                    | Implied   | 8 x 8                | RAM32M x 2                   | 
+|u_merge     | history_time_reg                                                                            | Implied   | 64 x 32              | RAM64M x 33                  | 
+|u_merge     | history_vl_reg                                                                              | Implied   | 64 x 16              | RAM64M x 6                   | 
+|u_merge     | history_sn_reg                                                                              | Implied   | 64 x 8               | RAM64M x 3                   | 
+|u_merge     | b_memory_reg                                                                                | Implied   | 2 K x 8              | RAM64X1D x 46  RAM64M x 46   | 
+|u_merge     | a_memory_reg                                                                                | Implied   | 2 K x 8              | RAM64X1D x 46  RAM64M x 46   | 
+|AFDX_top    | u_tx/u_frame_manager/u_frame_scheduler/u_frame_descriptor_fifo/descriptor_length_memory_reg | Implied   | 4 x 11               | RAM32M x 2                   | 
+|AFDX_top    | u_fanout/memory_reg                                                                         | Implied   | 2 K x 8              | RAM64X1D x 96  RAM64M x 96   | 
++------------+---------------------------------------------------------------------------------------------+-----------+----------------------+------------------------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/sequence_check_address_reg[0]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[0]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/sequence_check_address_reg[1]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[1]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/sequence_check_address_reg[2]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[2]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[3]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[3]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[4]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[4]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[5]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[5]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[6]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[6]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[13]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[13]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[14]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[14]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[12]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[12]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[15]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[15]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[7]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[7]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[8]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[8]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[9]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[9]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[10]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[10]'
+INFO: [Synth 8-3886] merging instance 'u_rx_b/u_packet_decoder/u_sequence_table/checked_vl_id_reg[11]' (FDCE) to 'u_rx_b/u_packet_decoder/frame_vl_id_reg[11]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/sequence_check_address_reg[0]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[0]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/sequence_check_address_reg[1]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[1]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/sequence_check_address_reg[2]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[2]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/checked_vl_id_reg[3]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[3]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/checked_vl_id_reg[4]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[4]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/checked_vl_id_reg[5]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[5]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/checked_vl_id_reg[6]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[6]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/checked_vl_id_reg[13]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[13]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/checked_vl_id_reg[14]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[14]'
+INFO: [Synth 8-3886] merging instance 'u_rx_a/u_packet_decoder/u_sequence_table/checked_vl_id_reg[12]' (FDCE) to 'u_rx_a/u_packet_decoder/frame_vl_id_reg[12]'
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-6837] The timing for the instance u_tx/u_frame_manager/u_payload_fifo/u_fifo_tx/memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_a/u_packet_decoder/u_sequence_table/vl_tag_memory_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_a/u_packet_decoder/u_sequence_table/vl_tag_memory_reg_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_a/u_packet_decoder/u_sequence_table/sequence_number_memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_a/u_frame_manager/payload_memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_b/u_packet_decoder/u_sequence_table/vl_tag_memory_reg_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_b/u_packet_decoder/u_sequence_table/vl_tag_memory_reg_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_b/u_packet_decoder/u_sequence_table/sequence_number_memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance u_rx_b/u_frame_manager/payload_memory_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:36 ; elapsed = 00:00:39 . Memory (MB): peak = 992.871 ; gain = 660.273
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 992.871 ; gain = 660.273
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 992.871 ; gain = 660.273
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 992.871 ; gain = 660.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 992.871 ; gain = 660.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 992.871 ; gain = 660.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 992.871 ; gain = 660.273
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+----------+------+
+|      |Cell      |Count |
++------+----------+------+
+|1     |BUFG      |     1|
+|2     |CARRY4    |   623|
+|3     |LUT1      |   140|
+|4     |LUT2      |  1984|
+|5     |LUT3      |   337|
+|6     |LUT4      |   459|
+|7     |LUT5      |   486|
+|8     |LUT6      |  1524|
+|9     |MUXF7     |   304|
+|10    |MUXF8     |    72|
+|11    |RAM128X1D |    64|
+|12    |RAM32M    |    16|
+|13    |RAM64M    |   326|
+|14    |RAM64X1D  |   284|
+|15    |RAMB18E1  |     1|
+|16    |RAMB36E1  |     8|
+|17    |FDCE      |  2766|
+|18    |FDPE      |     5|
+|19    |FDRE      |    36|
+|20    |IBUF      |    44|
+|21    |OBUF      |    90|
++------+----------+------+
+
+Report Instance Areas: 
++------+--------------------------------+-------------------------+------+
+|      |Instance                        |Module                   |Cells |
++------+--------------------------------+-------------------------+------+
+|1     |top                             |                         |  9570|
+|2     |  u_fanout                      |afdx_redundant_tx_fanout |   627|
+|3     |  u_merge                       |afdx_ab_frame_selector   |  1462|
+|4     |  u_rx_a                        |afdx_es_rx               |  1641|
+|5     |    u_frame_manager             |afdx_rx_frame_manager_1  |   290|
+|6     |    u_ingress_guard             |afdx_rx_ingress_guard_2  |   377|
+|7     |    u_packet_decoder            |packet_decoder_3         |   974|
+|8     |      u_parser                  |afdx_rx_parser_4         |   754|
+|9     |      u_sequence_table          |afdx_rx_sequence_table_5 |   193|
+|10    |  u_rx_b                        |afdx_es_rx_0             |  1643|
+|11    |    u_frame_manager             |afdx_rx_frame_manager    |   290|
+|12    |    u_ingress_guard             |afdx_rx_ingress_guard    |   379|
+|13    |    u_packet_decoder            |packet_decoder           |   974|
+|14    |      u_parser                  |afdx_rx_parser           |   754|
+|15    |      u_sequence_table          |afdx_rx_sequence_table   |   193|
+|16    |  u_stats                       |afdx_es_stats            |  3531|
+|17    |  u_tx                          |afdx_es_tx               |   528|
+|18    |    u_frame_manager             |afdx_tx_frame_manager    |   228|
+|19    |      u_frame_scheduler         |afdx_tx_frame_scheduler  |   136|
+|20    |        u_bag_timer             |bag_timer                |    93|
+|21    |        u_frame_descriptor_fifo |frame_descriptor_fifo    |    43|
+|22    |      u_payload_fifo            |fifo_ip_tx               |    70|
+|23    |        u_fifo_tx               |afdx_sync_fifo           |    70|
+|24    |    u_packet_output             |afdx_tx_packet_output    |   300|
+|25    |      u_packet_builder          |packet_builder           |   198|
+|26    |        u_afdx_header_builder   |afdx_header_builder      |    67|
+|27    |      u_sequence_counter        |sequence_counter         |    19|
+|28    |      u_switch_stream           |afdx_tx_switch_stream    |    81|
++------+--------------------------------+-------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 992.871 ; gain = 660.273
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 4 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:32 ; elapsed = 00:00:36 . Memory (MB): peak = 992.871 ; gain = 303.879
+Synthesis Optimization Complete : Time (s): cpu = 00:00:37 ; elapsed = 00:00:40 . Memory (MB): peak = 992.871 ; gain = 660.273
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 1698 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 992.871 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 690 instances were transformed.
+  RAM128X1D => RAM128X1D (RAMD64E, RAMD64E, MUXF7, MUXF7, RAMD64E, RAMD64E): 64 instances
+  RAM32M => RAM32M (RAMD32, RAMD32, RAMD32, RAMD32, RAMD32, RAMD32, RAMS32, RAMS32): 16 instances
+  RAM64M => RAM64M (RAMD64E, RAMD64E, RAMD64E, RAMD64E): 326 instances
+  RAM64X1D => RAM64X1D (RAMD64E, RAMD64E): 284 instances
+
+INFO: [Common 17-83] Releasing license: Synthesis
+214 Infos, 4 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:39 ; elapsed = 00:00:43 . Memory (MB): peak = 992.871 ; gain = 673.309
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 992.871 ; gain = 0.000
+WARNING: [Constraints 18-5210] No constraints selected for write.
+Resolution: This message can indicate that there are no constraints for the design, or it can indicate that the used_in flags are set such that the constraints are ignored. This later case is used when running synth_design to not write synthesis constraints to the resulting checkpoint. Instead, project constraints are read when the synthesized design is opened.
+INFO: [Common 17-1381] The checkpoint 'C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.runs/synth_1/AFDX_top.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file AFDX_top_utilization_synth.rpt -pb AFDX_top_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Wed Oct  7 10:05:58 2026...

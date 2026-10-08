@@ -1,0 +1,79 @@
+{
+  "project": "AFDX V3 standalone ES",
+  "date": "2026-10-07",
+  "simulator": "ModelSim",
+  "passed": true,
+  "folder": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142",
+  "results": [
+    {
+      "test": "tb_afdx_sync_fifo",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.53,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_sync_fifo.log"
+    },
+    {
+      "test": "tb_afdx_core_controls",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.56,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_core_controls.log"
+    },
+    {
+      "test": "tb_afdx_sequence_table",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.53,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_sequence_table.log"
+    },
+    {
+      "test": "tb_afdx_vl_csr",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.48,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_vl_csr.log"
+    },
+    {
+      "test": "tb_afdx_ab_selector",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.59,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_ab_selector.log"
+    },
+    {
+      "test": "tb_afdx_ab_delayed_copy",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.53,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_ab_delayed_copy.log"
+    },
+    {
+      "test": "tb_afdx_redundant_tx_fanout",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.58,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_redundant_tx_fanout.log"
+    },
+    {
+      "test": "tb_afdx_app_to_switch",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.56,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_app_to_switch.log"
+    },
+    {
+      "test": "tb_afdx_switch_to_app",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.61,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_switch_to_app.log"
+    },
+    {
+      "test": "tb_afdx_end_system",
+      "passed": true,
+      "returncode": 0,
+      "seconds": 1.64,
+      "log": "C:\\Users\\Admin\\Documents\\AFDX_PRJ\\AFDX_v3\\AFDX_v3\\artifacts\\regression\\20261007_022142\\tb_afdx_end_system.log"
+    }
+  ]
+}

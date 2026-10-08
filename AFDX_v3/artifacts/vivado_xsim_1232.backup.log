@@ -1,0 +1,27 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Wed Oct  7 02:15:08 2026
+# Process ID: 1232
+# Current directory: C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3
+# Command line: vivado.exe -mode batch -nojournal -log C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/artifacts/vivado_xsim.log -source C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/tools/project.tcl -tclargs simulate tb_afdx_end_system
+# Log file: C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/artifacts/vivado_xsim.log
+# Journal file: 
+#-----------------------------------------------------------
+CRITICAL WARNING: [Common 17-741] No write access right to the local Tcl store at 'C'. XilinxTclStore is reverted to the installation area. If you want to use local Tcl Store, please change the access right and relaunch Vivado.
+source C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/tools/project.tcl
+# set root [file dirname [file dirname [file normalize [info script]]]]
+# set mode [lindex $argv 0]
+# if {$mode eq ""} {set mode configure}
+# if {$mode ni {configure simulate synthesize}} {error "Unsupported mode: $mode"}
+# set top [lindex $argv 1]
+# if {$top eq ""} {set top tb_afdx_end_system}
+# set project_file [file join $root AFDX_v3.xpr]
+# set out [file join $root artifacts]
+# file mkdir $out
+can't create directory "C:/Users/Admin/AFDX_PRJ": permission denied
+    while executing
+"file mkdir $out"
+    (file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/tools/project.tcl" line 11)
+INFO: [Common 17-206] Exiting Vivado at Wed Oct  7 02:15:09 2026...

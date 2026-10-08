@@ -1,0 +1,187 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Wed Oct  7 02:16:45 2026
+# Process ID: 3200
+# Current directory: C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3
+# Command line: vivado.exe -mode batch -nojournal -log C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/artifacts/vivado_xsim.log -source C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/tools/project.tcl -tclargs simulate tb_afdx_end_system
+# Log file: C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/artifacts/vivado_xsim.log
+# Journal file: 
+#-----------------------------------------------------------
+source C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/tools/project.tcl
+# set script_path [info script]
+# if {[file pathtype $script_path] ne "absolute"} {set script_path [file join [pwd] $script_path]}
+# set root [file dirname [file dirname $script_path]]
+# set mode [lindex $argv 0]
+# if {$mode eq ""} {set mode configure}
+# if {$mode ni {configure simulate synthesize}} {error "Unsupported mode: $mode"}
+# set top [lindex $argv 1]
+# if {$top eq ""} {set top tb_afdx_end_system}
+# set project_file [file join $root AFDX_v3.xpr]
+# set out [file join $root artifacts]
+# file mkdir $out
+# set backup [file join $out project_before_migration.xpr]
+# if {![file exists $backup]} {file copy $project_file $backup}
+# open_project $project_file
+Scanning sources...
+Finished scanning sources
+# set rtl [lsort [glob [file join $root AFDX_v3.srcs sources_1 new *.v]]]
+# set tests [lsort [glob [file join $root AFDX_v3.srcs sim_1 new *.v]]]
+# foreach source $rtl {
+#     if {[llength [get_files -quiet $source]] == 0} {add_files -fileset sources_1 -norecurse $source}
+# }
+# foreach source $tests {
+#     if {[llength [get_files -quiet $source]] == 0} {add_files -fileset sim_1 -norecurse $source}
+# }
+# set constraint [file join $root constraints mac_stream_80ns.xdc]
+# if {[llength [get_files -quiet $constraint]] == 0} {add_files -fileset constrs_1 $constraint}
+# set_property top AFDX_top [get_filesets sources_1]
+# set_property top_auto_set false [get_filesets sources_1]
+# set_property top $top [get_filesets sim_1]
+# set_property top_auto_set false [get_filesets sim_1]
+# set_property xsim.simulate.runtime all [get_filesets sim_1]
+# update_compile_order -fileset sources_1
+# update_compile_order -fileset sim_1
+# if {$mode eq "simulate"} {
+#     launch_simulation
+#     close_sim
+#     set log [file join $root AFDX_v3.sim sim_1 behav xsim simulate.log]
+#     file copy -force $log [file join $out xsim_${top}.log]
+#     set fp [open $log r];set text [read $fp];close $fp
+#     if {![string match {*PASSED*} $text] || [regexp -nocase {FATAL|TIMEOUT|FAILED} $text]} {error "V3 XSim self-check failed"}
+#     puts "V3 XSIM PASSED: $top"
+# }
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'tb_afdx_end_system' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_afdx_end_system_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/AFDX_top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module AFDX_top
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_ab_frame_selector.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_ab_frame_selector
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_es_rx.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_es_rx
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_es_tx.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_es_tx
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_header_builder.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_header_builder
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_redundant_tx_fanout.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_redundant_tx_fanout
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_frame_manager.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_rx_frame_manager
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_parser.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_rx_parser
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_rx_sequence_table.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_rx_sequence_table
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_sync_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_sync_fifo
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_frame_manager.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_tx_frame_manager
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_frame_scheduler.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_tx_frame_scheduler
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_packet_output.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_tx_packet_output
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/afdx_tx_switch_stream.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module afdx_tx_switch_stream
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/bag_timer.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bag_timer
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/fifo_ip_tx.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fifo_ip_tx
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/frame_descriptor_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module frame_descriptor_fifo
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/packet_builder.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module packet_builder
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/packet_decoder.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module packet_decoder
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sources_1/new/sequence_counter.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module sequence_counter
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sim_1/new/tb_afdx_end_system.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_afdx_end_system
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.sim/sim_1/behav/xsim'
+Vivado Simulator 2018.3
+Copyright 1986-1999, 2001-2018 Xilinx, Inc. All Rights Reserved.
+Running: C:/DEVELOP/Vivado/Vivado/2018.3/bin/unwrapped/win64.o/xelab.exe -wto 6ad71de9a37c4c31a606e71b83868521 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot tb_afdx_end_system_behav xil_defaultlib.tb_afdx_end_system xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.afdx_sync_fifo
+Compiling module xil_defaultlib.fifo_ip_tx
+Compiling module xil_defaultlib.frame_descriptor_fifo
+Compiling module xil_defaultlib.bag_timer(BAG_CYCLES=10000)
+Compiling module xil_defaultlib.afdx_tx_frame_scheduler(BAG_CYCL...
+Compiling module xil_defaultlib.afdx_tx_frame_manager(BAG_CYCLES...
+Compiling module xil_defaultlib.sequence_counter
+Compiling module xil_defaultlib.afdx_header_builder(DEST_MAC=48'...
+Compiling module xil_defaultlib.packet_builder(DEST_MAC=48'b0110...
+Compiling module xil_defaultlib.afdx_tx_switch_stream
+Compiling module xil_defaultlib.afdx_tx_packet_output(DEST_MAC=4...
+Compiling module xil_defaultlib.afdx_es_tx(BAG_CYCLES=10000,DEST...
+Compiling module xil_defaultlib.afdx_redundant_tx_fanout(BAG_CYC...
+Compiling module xil_defaultlib.afdx_rx_parser(LOCAL_DEST_IP=32'...
+Compiling module xil_defaultlib.afdx_rx_sequence_table_default
+Compiling module xil_defaultlib.packet_decoder(LOCAL_DEST_IP=32'...
+Compiling module xil_defaultlib.afdx_rx_frame_manager
+Compiling module xil_defaultlib.afdx_es_rx(LOCAL_DEST_IP=32'b110...
+Compiling module xil_defaultlib.afdx_ab_frame_selector(DEDUP_WIN...
+Compiling module xil_defaultlib.AFDX_top(BAG_CYCLES=10000,DEDUP_...
+Compiling module xil_defaultlib.tb_afdx_end_system
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_afdx_end_system_behav
+
+****** Webtalk v2018.3 (64-bit)
+  **** SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
+  **** IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+    ** Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+
+source C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.sim/sim_1/behav/xsim/xsim.dir/tb_afdx_end_system_behav/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-206] Exiting Webtalk at Wed Oct  7 02:16:56 2026...
+INFO: [USF-XSim-69] 'elaborate' step finished in '3' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_afdx_end_system_behav -key {Behavioral:sim_1:Functional:tb_afdx_end_system} -tclbatch {tb_afdx_end_system.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2018.3
+Time resolution is 1 ps
+source tb_afdx_end_system.tcl
+## current_wave_config
+WARNING: [Wavedata 42-489] Can't add object "/tb_afdx_end_system/a_frames" to the wave window because it has 262144 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+WARNING: [Wavedata 42-489] Can't add object "/tb_afdx_end_system/b_frames" to the wave window because it has 262144 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+WARNING: [Wavedata 42-489] Can't add object "/tb_afdx_end_system/expected_data" to the wave window because it has 262144 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+WARNING: [Wavedata 42-489] Can't add object "/tb_afdx_end_system/expected_sn" to the wave window because it has 262144 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+WARNING: [Wavedata 42-489] Can't add object "/tb_afdx_end_system/expected_vl" to the wave window because it has 524288 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+V3 END SYSTEM PASSED: 9 shared TX frames, 10 identity-checked deliveries, external MAC models only
+$finish called at time : 6781920 ns : File "C:/Users/Admin/Documents/AFDX_PRJ/AFDX_v3/AFDX_v3/AFDX_v3.srcs/sim_1/new/tb_afdx_end_system.v" Line 157
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_afdx_end_system_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for all
+launch_simulation: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 336.855 ; gain = 15.754
+INFO: [Simtcl 6-16] Simulation closed
+V3 XSIM PASSED: tb_afdx_end_system
+# if {$mode eq "synthesize"} {
+#     reset_run synth_1
+#     launch_runs synth_1 -jobs 2
+#     wait_on_run synth_1
+#     if {[get_property PROGRESS [get_runs synth_1]] ne "100%"} {error "V3 synthesis did not complete"}
+#     open_run synth_1
+#     report_utilization -file [file join $out v3_utilization.rpt]
+#     report_timing_summary -file [file join $out v3_timing.rpt]
+#     write_checkpoint -force [file join $out v3_synth.dcp]
+#     puts "V3 SYNTHESIS PASSED"
+# }
+# close_project
+# puts "V3 PROJECT CONFIGURED: AFDX_top / $top"
+V3 PROJECT CONFIGURED: AFDX_top / tb_afdx_end_system
+# exit 0
+INFO: [Common 17-206] Exiting Vivado at Wed Oct  7 02:17:00 2026...

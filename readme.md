@@ -6,7 +6,7 @@
 
 本项目为AFDX端系统全流程设计，含SNMP,615A,TFTP等协议，供参考。
 
-联系方式：zhou_zheng@mail.ustc.edu.cn，禁止商用，仅供学习交流。版权所有。
+禁止商用，仅供学习交流。版权所有。
 ## 工程内容
 
 - `AFDX_ES_eLinx.epr`：eLinx 工程入口；`AFDX_ES_eLinx.srcs`：设计、仿真源码和约束。

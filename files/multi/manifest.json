@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "name": "flight_plan.txt",
+    "header": "flight_plan.LUH",
+    "description": "航班计划：航班号、起降机场、高度、速度和航路",
+    "size": 74,
+    "crc32": "031F5D49"
+  },
+  {
+    "id": 2,
+    "name": "routes.csv",
+    "header": "routes.LUH",
+    "description": "航段表：三个航路点及对应高度",
+    "size": 57,
+    "crc32": "14B20D51"
+  },
+  {
+    "id": 3,
+    "name": "radio.cfg",
+    "header": "radio.LUH",
+    "description": "无线电配置：两套通信频率、导航频率和应答机编码",
+    "size": 68,
+    "crc32": "68AFCFAE"
+  },
+  {
+    "id": 4,
+    "name": "cabin_msg.txt",
+    "header": "cabin_msg.LUH",
+    "description": "客舱通知：登机完成、客舱就绪和欢迎信息",
+    "size": 94,
+    "crc32": "F2B897CD"
+  },
+  {
+    "id": 5,
+    "name": "nav_points.csv",
+    "header": "nav_points.LUH",
+    "description": "导航点坐标：名称、纬度和经度",
+    "size": 69,
+    "crc32": "FF02BB8E"
+  },
+  {
+    "id": 6,
+    "name": "limits.json",
+    "header": "limits.LUH",
+    "description": "设备限值：温度、振动、油压和配置版本",
+    "size": 68,
+    "crc32": "45D40193"
+  },
+  {
+    "id": 7,
+    "name": "maint_log.txt",
+    "header": "maint_log.LUH",
+    "description": "维护记录：检查日期、设备、结果和维护操作",
+    "size": 80,
+    "crc32": "4A4EAD97"
+  },
+  {
+    "id": 8,
+    "name": "sensor_cal.csv",
+    "header": "sensor_cal.LUH",
+    "description": "传感器标定：温度、压力和加速度的偏移及增益",
+    "size": 74,
+    "crc32": "FC891FB0"
+  },
+  {
+    "id": 9,
+    "name": "status.ini",
+    "header": "status.LUH",
+    "description": "系统状态：地面模式、双网就绪和加载器状态",
+    "size": 73,
+    "crc32": "27CF8B01"
+  },
+  {
+    "id": 10,
+    "name": "payload.bin",
+    "header": "payload.LUH",
+    "description": "二进制载荷：含00、FF和不可打印字节的96字节数据",
+    "size": 96,
+    "crc32": "DA3E44FB"
+  }
+]

@@ -1,0 +1,91 @@
+\chapter{TFTP文件传输模块设计}
+\section{传输需求与会话方案}
+615A控制文件和用户文件均需要在两端之间按名称传递。TFTP使用请求、数据块和确认完成一个对象的传输，业务层可以据此获得文件完成、失败和重试事件。加载器与目标机都设置请求和服务能力：文件的实际流向由读取或写入命令决定，发起请求的一方可以是文件接收方。
+
+本设计以RFC 1350的基本报文为基础，使用RFC 2347选项机制和RFC 2348块长选项。文件按\code{octet}模式传送，保持原始字节。一个会话保存文件名、对端IP、实际TID、当前块号和文件偏移，并保留当前DATA，以便等待确认或执行重发。第三章的对象完成事件由此接口提供。
+
+\section{报文格式与长度关系}
+\subsection{TFTP报文字段}
+TFTP位于UDP正文中，操作码、块号和错误码为2字节大端整数；文件名、模式及选项为ASCII字符串，分别以NUL结束。DATA具有4字节固定头，OACK的操作码后直接跟随选项名和值。
+
+\begin{table}[htbp]\centering\small
+\caption{TFTP报文在UDP正文内的字段组织}
+\begin{tabularx}{\linewidth}{@{}l l Y@{}}\toprule 类型 & 操作码 & 字段顺序\\\midrule
+RRQ & \hex{00 01} & 操作码、文件名、NUL、octet、NUL、可选选项\\
+WRQ & \hex{00 02} & 操作码、文件名、NUL、octet、NUL、可选选项\\
+DATA & \hex{00 03} & 操作码2字节、块号2字节、文件正文0至$B$字节\\
+ACK & \hex{00 04} & 操作码2字节、确认块号2字节\\
+ERROR & \hex{00 05} & 操作码2字节、错误码2字节、说明及NUL\\
+OACK & \hex{00 06} & 操作码2字节、选项名、NUL、选项值、NUL\\\bottomrule
+\end{tabularx}\end{table}
+
+$B$表示会话DATA正文块长。基本会话采用512字节，协商成功后采用OACK确认的值。当前发送路径生成请求、DATA、ACK和OACK；收到ERROR后保存错误码并结束当前会话。每个对象独立维护请求和块号，控制文件与用户正文由各自名称关联到相应文件接口。
+
+\subsection{1467字节正文配置}
+端系统UDP正文上限为1471字节，其中TFTP操作码与块号占4字节，因此本地最大DATA正文取
+\[B_{\max}=1471-4=1467\ \text{字节}.\]
+大于512字节的应用文件在请求中提出\code{blksize=1467}。选项值采用十进制ASCII，完整13字节为
+\begin{lstlisting}[caption={请求和OACK中使用的块长选项}]
+62 6C 6B 73 69 7A 65 00 31 34 36 37 00
+ b  l  k  s  i  z  e NUL 1  4  6  7 NUL
+\end{lstlisting}
+
+1467字节文件正文对应1471字节UDP正文、1514字节核心帧和1526字节线上帧。调度与MAC的1578字节为缓存容量，实际帧长按正文决定。1012字节\code{text.txt}由一个DATA承载，线上共1071字节；8192字节\code{rate.bin}由5个1467字节块和1个857字节末块传送。
+
+\section{读取与写入交互}
+\subsection{读取会话}
+客户端向服务器UDP69端口发出RRQ。服务器响应的源TID成为后续会话端口，客户端保存该值，并用于后续ACK。带块长选项的读取会话在OACK后先由客户端ACK0确认，再由服务器发送DATA1，客户端完成写入后返回ACK1。
+
+\begin{table}[htbp]\centering\small
+\caption{协商读取1012字节文件的完整交互}
+\begin{tabularx}{\linewidth}{@{}l l Y@{}}\toprule 序号 & 方向与类型 & 内容\\\midrule
+1 & 客户端至服务器，RRQ & 请求text.txt，octet，blksize=1467\\
+2 & 服务器至客户端，OACK & 确认1467字节块长\\
+3 & 客户端至服务器，ACK0 & 确认OACK\\
+4 & 服务器至客户端，DATA1 & 块号1，携带全部1012字节正文\\
+5 & 客户端至服务器，ACK1 & 确认收到最后一块\\\bottomrule
+\end{tabularx}\end{table}
+
+\subsection{写入会话}
+客户端以WRQ请求写入对象。服务器接受块长选项后返回OACK，客户端直接发送DATA1确认选项并开始传输，服务器写完本块后ACK。未进行块长协商时，WRQ由服务器ACK0接受，RRQ由服务器直接返回首个DATA，两端保持512字节块长。
+
+\begin{table}[htbp]\centering\small
+\caption{协商写入会话的推进顺序}
+\begin{tabularx}{\linewidth}{@{}l l Y@{}}\toprule 序号 & 方向与类型 & 内容\\\midrule
+1 & 客户端至服务器，WRQ & 对象名称、octet及块长选项\\
+2 & 服务器至客户端，OACK & 返回接受的块长\\
+3 & 客户端至服务器，DATA1 & 使用协商块长发送首块\\
+4 & 服务器至客户端，ACK1 & 确认本块后继续后续DATA与ACK\\\bottomrule
+\end{tabularx}\end{table}
+
+DATA块号从1开始。接收方以正文长度小于$B$判断末块；文件长度恰为$B$的整数倍时，发送方增加一个零正文DATA作为末块，并等待同号ACK。重复DATA按照最近接收块号返回ACK，文件偏移不重复推进。接收最后一块后进入DALLY，以处理最后ACK丢失引起的重复DATA。
+
+\section{状态机与同步缓存实现}
+状态机用IDLE接收命令或服务请求，OPEN等待文件接口，REQUEST生成请求，DATA\_BUILD读取源对象并组装数据块。SEND输出当前报文，WAIT接收确认或数据，WRITE将收到的正文写入文件接口，DALLY处理最后一块的重复应答。等待超时后，保留的报文类别、块号和正文用于再次发送，同时产生\code{retry_event}。
+
+\begin{table}[htbp]\centering\small
+\caption{TFTP会话的关键保存信息}
+\begin{tabularx}{\linewidth}{@{}l Y@{}}\toprule 寄存器 & 保存内容\\\midrule
+\code{peer_ip/peer_tid} & 当前对端IP和实际会话端口\\
+\code{block_no/last_rx_block} & 待处理块号与最近接收块号\\
+\code{offset/total_size} & 已传文件位置与源文件总长\\
+\code{block_size/want_large} & 生效块长及是否提出大块选项\\
+\code{option_field/option_value} & 选项字段位置与十进制值\\
+\code{tx_kind/tx_block/tx_len} & 当前待发送类型、块号与包长\\
+\code{build_index/write_index/data_count} & 组包位置、写回位置及实际正文长度\\
+\code{timer/retry_count} & 应答等待计时与已重试次数\\\bottomrule
+\end{tabularx}\end{table}
+
+每个主动、服务会话使用一份1467字节同步M4K缓存，状态会话使用512字节缓存。对象打开后，当前文件正文的方向由\code{sending_file}确定：发送方向把源字节写入缓存供DATA和重发读取，接收方向把DATA正文写入同一缓存供文件写回。请求、ACK和OACK直接编码，因而不占用另一份正文缓存。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=Verilog,caption={发送组包以当前会话块长控制读取}]
+assign file_read_valid=!reset && state==DATA_BUILD &&
+                       build_index<block_size &&
+                       offset+build_index<total_size;
+\end{lstlisting}
+\end{minipage}\par
+
+同步文件读取、DATA组包、网络整帧缓存和接收写回分别通过握手推进。发送方在收到当前ACK后才推进到下一块，因此帧内连续输出的线速与整个文件交互的平均速率分别由不同时间区间决定。第六章以100次连续传输的文件正文和首末DATA帧时刻统计文件速度，并给出满DATA帧、往返确认和下一帧准备之间的实测时间。
+
+协议格式依据\href{https://www.rfc-editor.org/rfc/rfc1350.html}{RFC 1350}、选项交互依据\href{https://www.rfc-editor.org/rfc/rfc2347.html}{RFC 2347}，块长定义和末块规则依据\href{https://www.rfc-editor.org/rfc/rfc2348.html}{RFC 2348}。

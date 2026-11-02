@@ -1,0 +1,131 @@
+\chapter{AFDX端系统总体设计}
+\section{设计目标与总体方案}
+端系统位于应用设备与AFDX网络之间，负责将应用数据转换为带有虚拟链路标识的网络帧，并将网络接收数据交付给相应业务。对于文件加载应用，端系统既需要保持文件名、长度和业务状态之间的关联，也需要完成多VL发送调度、双网传输和副本消除。为此，本设计将文件业务处理与网络字节收发分层组织，使业务状态的推进和物理帧的发送分别由相应模块完成。
+
+系统以\code{AFDX_top}为顶层，由应用接口、文件与任务管理、615A加载服务、网络收发、双网MAC以及SNMP管理六部分构成。应用接口接收目录和文件字节，文件服务保存源对象与接收对象；加载服务按615A流程选择当前传输对象，TFTP负责该对象的逐块传输；网络部分完成UDP/IP封装、VL调度和A/B链路收发。SNMP通过同一网络通路提供统计查询和事件通知，本地RTC为管理模块提供运行时间。
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[box/.style={draw=accent,rounded corners=2pt,fill=wash,text width=39mm,minimum height=14mm,align=center,font=\small},link/.style={<->,>=Stealth,thick,draw=ink},node distance=9mm and 8mm]
+\node[box](app){APP接口\\目录、文件字节与结果};
+\node[box,right=of app](file){文件与任务管理\\对象存储、任务路由};
+\node[box,right=of file](load){615A与TFTP\\业务控制、文件传输};
+\node[box,below=of load](net){UDP/IP与VL处理\\封装、解析、调度};
+\node[box,left=of net](mac){A/B双网MAC\\帧发送、FCS检查};
+\node[box,left=of mac](mgmt){SNMP与RTC\\查询、通知、计时};
+\draw[link](app)--(file);\draw[link](file)--(load);\draw[link](load)--(net);
+\draw[link](net)--(mac);
+\draw[link](mgmt.south)--++(0,-7mm)-|(net.south);
+\end{tikzpicture}
+\caption{端系统的功能划分与主要数据通路}
+\end{figure}
+
+层间通过字节握手传递正文，同时传递文件编号、IP、端口、VL和长度。网络缓存保存完整帧，文件存储保存正文，控制模块按地址和状态推进。多通道业务独立等待协议事件，物理链路在完整帧之间仲裁。
+
+
+\subsection{顶层模块组成与任务}
+\code{AFDX_top}的实例层级如图所示。方框对应顶层源码中的实例，连线表示层级归属；模块之间的主要数据通路见前图。
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[unit/.style={draw=accent,rounded corners=2pt,fill=wash,minimum width=82mm,minimum height=8mm,align=center,font=\small},branch/.style={draw=ink,thick}]
+\node[unit,minimum width=54mm] (top) at (0,0) {顶层：\code{AFDX_top}};
+\node[unit] (app) at (1.6,-1.4) {\code{app}：\code{afdx_app_control}};
+\node[unit] (files) at (1.6,-2.5) {\code{files}：\code{afdx_file_service}};
+\node[unit] (tasks) at (1.6,-3.6) {\code{tasks}：\code{arinc615a_tasks}};
+\node[unit] (service) at (1.6,-4.7) {\code{service}：\code{arinc615a_service}};
+\node[unit] (clock) at (1.6,-5.8) {\code{clock}：\code{afdx_rtc}};
+\node[unit] (endpoint) at (1.6,-6.9) {\code{endpoint}：\code{afdx_snmp_udp_service}};
+\node[unit] (network) at (1.6,-8.0) {\code{network}：\code{afdx_network}};
+\draw[branch] (top.south) -- (0,-0.8) -- (-3,-0.8) -- (-3,-8.0);
+\draw[branch] (-3,-1.4) -- (app.west);
+\draw[branch] (-3,-2.5) -- (files.west);
+\draw[branch] (-3,-3.6) -- (tasks.west);
+\draw[branch] (-3,-4.7) -- (service.west);
+\draw[branch] (-3,-5.8) -- (clock.west);
+\draw[branch] (-3,-6.9) -- (endpoint.west);
+\draw[branch] (-3,-8.0) -- (network.west);
+\end{tikzpicture}
+\caption{AFDX\_top顶层实例组成}
+\end{figure}
+
+各模块的具体工作任务如下。
+\begin{enumerate}
+\item \code{app}（\code{afdx_app_control}）：接收APP输入的操作、目录和文件字节，按有效与就绪握手组织输入；访问文件目录和正文，向任务管理模块提交操作，并将任务结果、查询结果及文件字节交付APP。
+\item \code{files}（\code{afdx_file_service}）：管理文件目录项、文件槽、头文件和数据文件的存储与读写；根据文件ID与VL配置分配文件访问通道，并向加载服务提供文件名、长度及头处理和数据提交事件。
+\item \code{tasks}（\code{arinc615a_tasks}）：接收应用提交的任务，按文件ID映射至业务VL队列，维护任务启动、超时、取消和完成状态；向加载服务发出命令，并将执行结果反馈给应用接口。
+\item \code{service}（\code{arinc615a_service}）：按各业务VL执行615A上传或下载流程，通过TFTP传输控制文件、加载头和用户文件；访问文件服务，通过网络模块收发UDP正文，并输出完成、失败和重试等加载事件。
+\item \code{clock}（\code{afdx_rtc}）：依据输入时钟和\code{CLOCK_HZ}参数维护秒和秒内纳秒，生成本地时间戳；顶层将其换算为百分之一秒，供SNMP运行时间对象使用。
+\item \code{endpoint}（\code{afdx_snmp_udp_service}）：在启用SNMP时接收UDP管理查询，解析GET并生成Response；结合网络统计和加载事件生成Trap通知，通过网络模块发送管理报文。
+\item \code{network}（\code{afdx_network}）：对业务及管理UDP数据进行IP/UDP封装、VL调度和A/B双网发送；接收并检查物理帧，解析网络报文，按VL和序号消除重复副本，再向对应业务或管理模块交付正文。
+\end{enumerate}
+
+\section{应用接口与文件组织}
+\subsection{顶层接口}
+应用侧使用两个方向的8位字节接口，网络侧使用A、B两组GMII信号。顶层共20个公开信号、合计62位，下表统一给出方向、位宽和用途，后续章节直接沿用这些名称。
+
+\begin{longtable}{@{}p{39mm}p{25mm}p{85mm}@{}}
+\caption{顶层公开IO与用途}\\\toprule 信号 & 方向/位宽 & 说明\\\midrule\endfirsthead
+\toprule 信号 & 方向/位宽 & 说明\\\midrule\endhead
+\code{clk} & 输入/1 & 仿真50 MHz，每10 ns翻转，周期20 ns\\
+\code{reset} & 输入/1 & 高有效复位，测试在160 ns释放\\
+\code{rx_data} & 输入/8 & APP提供的目录或文件字节\\
+\code{rx_valid} & 输入/1 & APP声明当前输入字节有效\\
+\code{tx_ready} & 输出/1 & ES允许接受APP输入；与\code{rx_valid}同时为1时采样\\
+\code{tx_data} & 输出/8 & 向APP输出的记录头、完成记录或文件正文\\
+\code{tx_valid} & 输出/1 & ES声明当前APP输出字节有效\\
+\code{rx_ready} & 输入/1 & APP允许接收；与\code{tx_valid}同时为1时交付\\
+\code{gmii_tx_a_txd} / \code{gmii_tx_b_txd} & 输出/各8 & A/B网发送字节，含前导码与FCS\\
+\code{gmii_tx_a_en} / \code{gmii_tx_b_en} & 输出/各1 & 相应网络发送有效，帧内每拍一个字节\\
+\code{gmii_tx_a_er} / \code{gmii_tx_b_er} & 输出/各1 & 相应网络发送错误标志\\
+\code{gmii_rx_a_rxd} / \code{gmii_rx_b_rxd} & 输入/各8 & A/B网接收字节\\
+\code{gmii_rx_a_dv} / \code{gmii_rx_b_dv} & 输入/各1 & 相应网络存在候选物理帧\\
+\code{gmii_rx_a_er} / \code{gmii_rx_b_er} & 输入/各1 & 相应网络接收错误标志\\\bottomrule
+\end{longtable}
+
+应用接口在时钟上升沿同时满足有效与就绪条件时完成一次字节传递。发送方在等待期间保持当前字节，因此连续相同数值和未被接受的保持周期可以通过握手条件区分。GMII接收接口按照数据有效位采样，MAC在完整帧接收结束并通过FCS检查后，将候选帧交给后续解析模块。
+
+\subsection{目录、文件槽与任务路由}
+APP目录由7字节公共头和每个文件113字节目录项组成。公共头携带版本、操作、条目数和对端IP；目录项给出头文件与数据文件的长度、CRC、文件名和部件号。多字节目录整数按低字节先传输，名称采用ASCII及NUL结束。目录项完成后，APP依次输入相应源对象的正文。
+
+文件服务以文件槽和字节偏移定位存储。任务路由器根据\code{FILE_IDS}、\code{FILE_VLS}将文件任务送入指定VL队列，每项任务保存文件ID、操作和对端IP，共67位。执行阶段读取队首的文件信息，业务完成后释放任务。一个VL只映射一个文件时直接访问对应目录槽；多个文件共享VL时，根据当前文件ID选择目录。文件数据通过同步读写请求访问，读取结果返回后业务模块再推进字节位置。
+
+\section{发送数据通路}
+\subsection{UDP/IP封装与帧缓存}
+业务模块提交UDP正文、源与目的端口以及对端IP。发送模块先保存正文并计算长度和校验信息，再依次输出以太网头、IPv4头、UDP头及正文。目的MAC的低16位承载VL，格式为\code{03:00:00:00:VL_H:VL_L}，接收端据此识别虚拟链路。VL序号与数据帧一起进入发送路径，序号在1至255之间循环。
+
+本设计支持1471字节UDP正文，调度和MAC核心帧缓存容量为1578字节。核心帧不含前导码和FCS。对于长度为$L$的UDP正文，当前发送格式在线上的字节数为
+\[L_{\mathrm{wire}}=8+\max(60,43+L)+4.\]
+其中8字节为前导码和SFD，核心部分包含MAC、IP、UDP、正文和SN，末尾4字节为FCS。UDP正文1471字节对应1514字节核心帧及1526字节线上帧。
+
+\subsection{VL调度与双网发送}
+各VL分别维护完整帧队列及BAG计数。调度器从\code{round_robin}指定的位置开始，优先选取该位置之后编号最小且可发送的VL；该段没有候选时，再从编号0开始选择。通道状态按固定索引检查，选中的\code{grant}在帧发送期间保持，保证一个物理帧不会被其他VL的字节打断。
+
+同一完整帧交给A、B两路MAC输出，两份副本具有相同的VL、SN和业务内容。MAC补入前导码、SFD和FCS，并按字节时钟连续输出。BAG以参数指定的时钟周期计数，决定同一VL下一帧进入发送的最早时刻；TFTP应答和文件缓存访问则决定业务层何时能够准备好下一份正文。两类等待分别由网络调度和文件会话处理。
+
+\section{接收数据通路}
+A、B两路MAC分别完成帧接收及FCS检查。通过检查的候选帧进入各自的IP/UDP解析和正文缓存，解析结果包含两端IP、UDP端口、正文长度、VL及序号。网络层将这些信息作为帧描述与正文关联保存，供业务路由和副本选择使用。
+
+副本选择器按VL保存最近交付的SN。候选帧序号与最近序号相同时进入DRAIN，仅消费该副本；新序号进入SEND，向业务侧输出一份正文，并在帧尾更新记录。A、B同时可用时选择A，选中后保持网面至该帧结束。因而A网断开时可以直接处理B网候选，A网发生字节损坏时由MAC丢弃其错误帧，业务继续消费另一网通过检查的完整副本。
+
+业务层按目的端口和VL配置将UDP正文交给加载服务或SNMP服务。TFTP接收完成的文件写入文件槽，615A业务完成后，应用接口输出完成记录和文件字节。该路径把完整物理帧的有效性、重复副本的消除以及文件业务的完成条件依次落实到相应模块。
+
+\section{管理支持与实现配置}
+SNMP接收管理查询，返回网络与加载统计，并根据真实重试、失败和A/B错误事件产生通知。Response与Trap通过整包仲裁进入管理发送通道，随后复用UDP/IP及双网MAC。RTC按\code{CLOCK_HZ}累计秒和秒内纳秒，为SNMP运行时间提供统一来源。
+
+当前整机配置为10条业务发送VL和100项业务接收订阅，每VL保留2项任务与1个发送帧槽。每文件配置8192字节数据区及32字节测试头区，字节存储采用同步M4K。615A控制文件缓存128字节，名称缓存16字节；主动和服务TFTP会话分别使用一份1467字节收发复用正文缓存，状态会话使用512字节缓存。同步存储返回和业务等待均由握手推进。
+
+本轮功能仿真将统一字节时钟设为50 MHz，测试封装同步设置\code{CLOCK_HZ=50000000}，使RTC及按频率配置的计时与实际时钟一致。以周期指定的BAG、重试和等待参数按20 ns换算，每$N$拍对应$20N$ ns。8位网络接口在发送有效期间每拍输出一字节，对应400 Mbit/s帧内字节速率；文件正文的平均速度按第六章的实测区间统计。
+
+\begin{table}[htbp]\centering\small
+\caption{EQ6HL130综合后资源利用情况}
+\begin{tabularx}{\linewidth}{@{}Y r r r@{}}\toprule
+资源 & 使用量 & 可用量 & 利用率\\\midrule
+LUT & 122000 & 136000 & 89.71\%\\
+FF & 46668 & 136000 & 34.31\%\\
+IO & 62 & 339 & 18.29\%\\
+DSP & 1 & 48 & 2.08\%\\
+Memory & 384 & 1200 & 32.00\%\\
+PLL & 0 & 8 & 0.00\%\\
+CLB & 13518 & 13600 & 99.40\%\\\bottomrule
+\end{tabularx}\end{table}
+
+目标封装为CSG484\_H。13518个CLB占器件13600个可用CLB的99.40\%，剩余82个。前端综合耗时6分6秒，后端装箱成功。以上资源对应当前设计逻辑；第六章通过公开接口验证文件业务、双网接收和连续传输过程。

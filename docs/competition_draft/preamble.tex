@@ -1,0 +1,25 @@
+\usepackage[margin=24mm,headheight=16pt]{geometry}
+\usepackage{amsmath,booktabs,tabularx,array,graphicx,xcolor,tikz,enumitem,fancyhdr,longtable,listings}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[unicode,colorlinks=true,linkcolor=black,urlcolor=blue!55!black]{hyperref}
+\definecolor{ink}{HTML}{19354A}
+\definecolor{wash}{HTML}{EEF4F8}
+\definecolor{accent}{HTML}{236B87}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.25em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.18}
+\setlist{nosep,leftmargin=2em}
+\ctexset{chapter={format=\huge\bfseries\color{ink}},section={format=\Large\bfseries\color{ink}},subsection={format=\large\bfseries\color{ink}}}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small AFDX端系统设计与仿真}
+\fancyhead[R]{\small\nouppercase{\leftmark}}
+\fancyfoot[C]{\small\thepage}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}\renewcommand{\headrulewidth}{0pt}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\hex}[1]{{\ttfamily\footnotesize #1}}
+\lstset{basicstyle=\ttfamily\footnotesize,columns=fullflexible,breaklines=true,keepspaces=true,showstringspaces=false,frame=single,rulecolor=\color{accent!40},backgroundcolor=\color{wash},aboveskip=8pt,belowskip=8pt}
+\setcounter{tocdepth}{2}
+\hypersetup{pdftitle={AFDX端系统设计与仿真报告},pdfsubject={赛题描述、端系统、615A、SNMP、TFTP协议与最大帧收发仿真}}

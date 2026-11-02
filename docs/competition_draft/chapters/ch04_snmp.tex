@@ -1,0 +1,68 @@
+\chapter{SNMP管理模块设计}
+\section{管理模块的功能划分}
+文件加载过程需要同时观察网络收发状态和加载业务结果。SNMP模块将这两类信息组织为可查询对象，并把重试、失败及网络错误转为主动通知。管理模块通过UDP接入端系统，与文件业务共用网络封装及A/B链路，从而在同一端系统中完成数据传输和运行状态管理。
+
+\code{afdx_snmp_udp_service}接收UDP161端口的查询，将请求正文送入SNMP代理，并保存源IP和源端口，供Response返回。代理采用\code{snmp_request_buffer}保存请求，由\code{snmp_ber_reader}定位BER字段，\code{snmp_agent}完成GET识别、OID查表和应答编码。\code{snmp_v2_control}接收运行事件，\code{snmp_v2_trap}将事件编码为UDP162通知。
+
+当前管理接收VL为\code{0x0102}，Response和Trap发送VL分别为\code{0x0103}、\code{0x0104}。业务对象的值由本地RTC、网络统计与加载事件共同提供，管理发送通过独立BAG预算及整包仲裁接入网络。
+
+\section{GET请求的处理过程}
+接收模块在请求完整到达后发出\code{request_valid}。BER读取器按标签、长度和值定位消息SEQUENCE、版本、community、PDU、请求编号和变量绑定列表。代理识别\code{A0}类型GET，将\code{request_id}逐字节累积，并在Response中返回相同编号，使查询和应答保持对应。
+
+每个OID按base128还原子标识，当前累加值保存在\code{subid}，已完成的段写入\code{arcs[0:8]}。查表过程用\code{candidate/compare_arc}逐段比较MIB项，命中编号写入\code{exact_table}；同时保存原OID在请求中的地址和长度。应答阶段按原列表顺序读取这些描述项，保留请求中的OID名称，再输出相应类型和值。
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[box/.style={draw=accent,fill=wash,rounded corners=2pt,text width=22mm,minimum height=14mm,align=center,font=\small},link/.style={-{Stealth[length=2mm]},draw=ink,thick},node distance=5mm]
+\node[box](ber){BER定位\\标签与长度};
+\node[box,right=of ber](oid){OID解码\\子标识};
+\node[box,right=of oid](mib){MIB查找\\保存描述};
+\node[box,right=of mib](body){Response\\正文编码};
+\node[box,right=of body](send){整包发送\\UDP回复};
+\draw[link](ber)--(oid);\draw[link](oid)--(mib);\draw[link](mib)--(body);\draw[link](body)--(send);
+\end{tikzpicture}
+\caption{GET请求到Response应答的数据处理过程}
+\end{figure}
+
+当前v2配置包含71个MIB项，覆盖系统信息、网络统计和加载管理统计。应答值使用字符串、OID、TimeTicks和无符号计数等BER类型。未匹配的OID编码为\code{80}类型的\code{noSuchObject}。运行时间在本次读取阶段保存，管理统计通过输入接口提供，编码器根据选中对象的类型和数值确定其长度与字节。
+
+\section{描述表与应答缓存}
+请求缓存为256字节。一个合法变量绑定至少包含2字节SEQUENCE头、3字节OID TLV和2字节值TLV，因而按\code{MAX_BYTES/7}分配36项描述表可以覆盖本地请求容量。每项保存11位原OID地址、11位长度和7位MIB匹配编号，绑定数量和当前索引均为6位。描述表只保存定位及查找结果，应答时再从请求缓存读出OID字节。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=Verilog,caption={OID描述表的实际容量组织}]
+// MAX_BINDINGS: descriptors for all legal bindings in one request.
+localparam MAX_BINDINGS=MAX_BYTES/7;
+// BINDING_WIDTH: binding count and reply index width.
+localparam BINDING_WIDTH=$clog2(MAX_BINDINGS+1);
+// raw_addr/raw_length: original OID address and byte length.
+reg [10:0] raw_addr[0:MAX_BINDINGS-1],raw_length[0:MAX_BINDINGS-1];
+// exact_table: matching MIB index for each binding.
+reg [6:0] exact_table[0:MAX_BINDINGS-1];
+\end{lstlisting}
+\end{minipage}\par
+
+\begin{table}[htbp]\centering\small
+\caption{GET代理的主要保存信息}
+\begin{tabularx}{\linewidth}{@{}l Y@{}}\toprule 寄存器 & 内容\\\midrule
+\code{state/phase} & 总处理步骤与当前BER字段层次\\
+\code{request_id} & 本次请求编号，32位\\
+\code{direct_addr/remaining} & 请求字节读取位置和剩余长度\\
+\code{next_field/list_end/binding_end} & 当前字段、绑定列表和绑定边界\\
+\code{subid/arcs/arc_count} & 当前OID的逐段解码结果\\
+\code{raw_addr/raw_length/exact_table} & 36项OID位置、长度与MIB编号\\
+\code{binding_count/binding_index} & 6位绑定数量与当前应答位置\\
+\code{value_tag/value_length/value_number} & 所选对象的编码类型、长度和值\\
+\code{body_length/emit_index/send_index} & 正文生成与整包发送的字节位置\\\bottomrule
+\end{tabularx}\end{table}
+
+应答正文先写入256字节同步RAM。正文生成完成后，发送阶段依次输出消息头、请求编号、错误字段和已生成的绑定正文。同步读地址提前准备下一字节，输出发生等待时保持当前索引，确保暂停前后的字节次序一致。正文RAM和描述表分开，使查表过程围绕短描述工作，报文字节保持在缓存中。
+
+\section{加载事件与Trap生成}
+615A服务汇总各VL的真实重试脉冲和成功、失败事件，给出\code{load_valid/load_failed/load_file/load_value/load_reason}。管理控制模块优先处理A/B错误计数变化，再处理加载事件。当前类别1、2对应A/B错误，类别8对应加载失败，类别9对应重试，通知使能由管理参数控制。
+
+一个待发送事件保存4位类别和三个32位字段，分别表示来源、数值和细节，共100位。\code{head/tail/used}维护事件队列；\code{counts[0:4]}累计GET、Response、拒绝、忙事件和Trap发送。Trap编码器输出\code{A7}类型PDU，先放入\code{sysUpTime.0}和通知OID，再依次放入事件类别、来源、数值、阈值和细节。文件加载失败时，来源字段对应文件ID，细节字段保存业务错误原因。
+
+\section{管理报文的输出控制}
+Response与Trap共享管理输出，因此仲裁以完整报文为单位。\code{granted/owner}保存当前来源，\code{started}记录首字节是否完成握手，选中后保持到末字节。报文完成后转换优先级，\code{budget}限制下一包最早进入发送的时刻。查询源地址另由\code{reply_ip/reply_port}保存，使应答目的与通知目标分别保持。
+
+管理报文随后进入UDP/IP封装、VL调度及双网MAC。第六章通过两次GET之间的真实文件重试与失败操作，验证统计变化和Trap对象值，并以16绑定请求检查多项应答及暂停后的继续发送。

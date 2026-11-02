@@ -1,0 +1,18 @@
+% !TeX program = xelatex
+\documentclass[UTF8,a4paper,zihao=-4,fontset=fandol,openany]{ctexrep}
+\input{preamble}
+\begin{document}
+\hypersetup{pageanchor=false}
+\input{chapters/frontmatter}
+\pagenumbering{Roman}
+\hypersetup{pageanchor=true}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\include{chapters/ch01_problem}
+\include{chapters/ch02_endpoint}
+\include{chapters/ch03_615a}
+\include{chapters/ch04_snmp}
+\include{chapters/ch05_tftp}
+\include{chapters/ch06_simulation}
+\end{document}

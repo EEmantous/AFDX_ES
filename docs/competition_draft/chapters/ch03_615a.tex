@@ -1,0 +1,83 @@
+\chapter{ARINC 615A加载业务设计}
+\section{业务处理方案}
+615A加载业务将一次文件加载组织为初始化、请求列表、文件传输和结果报告几个阶段。每个阶段需要传送的对象由业务控制器确定，对象本身通过TFTP传递。由此，一次TFTP文件接收完成用于触发下一业务步骤，而整个615A操作的完成还需要满足最终状态条件。
+
+本设计在每个业务VL上设置独立的\code{arinc615a_node}，由\code{arinc615a_service}统一连接文件读写和任务接口。节点包含业务控制器、三组TFTP会话及相应控制文件编解码器。控制器保存当前操作和对端IP，根据文件完成事件推进状态；编解码器将控制字段转换为字节对象，或将收到的对象还原为状态、名称等事件信息。文件服务保存APP提供的头文件和用户正文。
+
+\section{控制对象与数据交互}
+上传业务主要使用LUI、LUR和LUS三类控制文件。LUI用于返回初始化结果，LUR用于给出本次请求装载的对象，LUS用于传递初始、进行中和最终状态。三个对象均由TFTP传输，它们的业务含义通过对象类型和控制正文确定。
+
+\begin{table}[htbp]\centering\small
+\caption{上传过程中的主要对象}
+\begin{tabularx}{\linewidth}{@{}l l Y@{}}\toprule 对象 & 传输方向 & 业务内容\\\midrule
+LUI & 目标机至加载器 & 初始化是否接受，以及状态说明\\
+LUR & 加载器至目标机 & 请求项数量、头文件名及部件号\\
+LUH & 加载器至目标机 & APP提供的独立加载头对象\\
+用户文件 & 加载器至目标机 & 实际待交付的数据字节\\
+LUS & 目标机至加载器 & 状态、序号、进度及分项结果\\\bottomrule
+\end{tabularx}\end{table}
+
+控制对象的前6字节为4字节总长度和2字节版本文字\code{A3}，随后按对象类型排列相应字段。LUR给出数量和名称、部件号；LUS在状态后增加状态序号、计时、进度和分项状态。字符串由长度字段和名称字节组成，包含结束零。多字节控制整数按网络字节序编码。
+
+\section{上传控制流程}
+加载器接收APP提交的上传任务后，先请求目标机的LUI。目标机根据当前状态和任务条件返回准入结果。加载器得到接受状态1后提交LUR；目标机在初始化结束后还将初始LUS排入独立状态通道，报告已接受及当前进度。
+
+目标机收到LUR后，依据列表中的名称请求LUH，再进入头对象处理步骤。头处理事件通过后，目标机主动请求用户数据文件。此时目标机是TFTP请求方，加载器是文件提供方，用户正文仍由加载器流向目标机。文件块全部接收并完成本地提交事件后，目标机生成状态3和100\%进度的最终LUS。加载器解析最终状态并形成操作结果，目标机在最终状态会话完成后输出本地业务完成事件。
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[box/.style={draw=accent,fill=wash,rounded corners=2pt,text width=22mm,minimum height=14mm,align=center,font=\small},link/.style={-{Stealth[length=2mm]},draw=ink,thick},node distance=5mm]
+\node[box](init){初始化\\LUI};
+\node[box,right=of init](list){请求列表\\LUR};
+\node[box,right=of list](head){读取头\\LUH};
+\node[box,right=of head](data){读取正文\\用户文件};
+\node[box,right=of data](status){最终状态\\LUS};
+\draw[link](init)--(list);\draw[link](list)--(head);\draw[link](head)--(data);\draw[link](data)--(status);
+\end{tikzpicture}
+\caption{上传业务按对象完成事件推进的流程}
+\end{figure}
+
+状态通道与主动文件通道分开设置。\code{status_pending}表示存在待发送状态，\code{status_inflight}表示该状态已交给TFTP引擎；状态提交后增加序号，并重新开始状态计时。操作持续期间按\code{STATUS_INTERVAL}产生进行中状态，最终结果通过同一通道报告。控制器因此能够在等待文件应答时继续维护业务状态。
+
+\section{状态机与会话组织}
+加载器状态机由\code{IDLE}接收任务，经\code{ISSUE}提交命令，在\code{L_INIT}等待初始化结果，之后进入列表发送和最终状态等待。目标机由初始化进入\code{T_WAIT_LIST}，上传时依次经过头文件读取、头处理、数据传输和数据提交，再进入\code{FINISH}。控制器通过事件类型识别当前完成的对象，避免不同会话的文件完成脉冲混用。
+
+\begin{table}[htbp]\centering\small
+\caption{业务控制器的主要状态与触发事件}
+\begin{tabularx}{\linewidth}{@{}l Y@{}}\toprule 状态 & 触发与处理\\\midrule
+\code{IDLE/ISSUE} & 锁存操作及对端IP，向主动会话提交对象命令\\
+\code{L_INIT/L_LIST} & 解析初始化结果，发送相应请求列表\\
+\code{L_WAIT_FINAL} & 解析最终LUS或LNS，状态3产生成功结果\\
+\code{T_WAIT_LIST/T_HEAD} & 取得列表名称，启动头对象读取\\
+\code{T_VERIFY_HEAD/T_DATA} & 头处理事件通过后，传送用户文件\\
+\code{T_COMMIT/FINISH} & 取得提交事件，发送最终状态并完成操作\\\bottomrule
+\end{tabularx}\end{table}
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=Verilog,caption={初始化完成后发出上传请求列表}]
+L_INIT: if(event_valid && event_kind==op) begin
+  if(event_status!=1) finish(event_status);
+  else if(op==2) issue(1,7,header_name,L_LIST);
+  else if(op==3) issue(1,9,data_name,L_LIST);
+end
+\end{lstlisting}
+\end{minipage}\par
+
+三个会话分别承担主动命令、对端服务和状态发送，本地TID为42000、41000和43000。接收路由根据目的端口选择对应上下文，UDP69请求进入服务会话；发送仲裁按整包锁定当前来源，直到末字节完成。各上下文保存对象类型、名称和读写位置，并通过文件接口访问应用对象或控制文件缓存。
+
+\section{下载与控制文件存储}
+下载业务由加载器取得LND初始化结果，再发送LNR列表。目标机根据列表主动写入用户文件，加载器接收并返回逐块ACK，最终由目标机发送LNS状态。上传与下载共用对象编解码、TFTP和文件读写接口，控制器通过操作码与对象类型选择实际步骤。报文格式和块长协商集中在第五章说明。
+
+\code{arinc615a_files}采用HEADER、FIELDS和PATCH步骤生成控制文件：先建立公共头，再输出对象字段，最后回填长度。接收解析按相同字段顺序读取对象，并输出解析状态、名称和部件号。生成和接收各配置128字节同步缓存，\code{saved_kind/step/cursor}定位字段与字节，\code{saved_status/saved_counter/saved_percent}保存本次编码的状态值。
+
+\begin{table}[htbp]\centering\small
+\caption{加载业务的关键保存信息}
+\begin{tabularx}{\linewidth}{@{}l Y@{}}\toprule 寄存器或信号 & 作用\\\midrule
+\code{state/next_state/op} & 当前步骤、命令完成后的步骤和操作类型\\
+\code{peer_ip/status_timer} & 会话对端及状态发送计时\\
+\code{seq/status} & 状态序号与当前业务状态\\
+\code{status_pending/status_inflight} & 待发送状态与在途状态的区分\\
+\code{active_kind/open_armed} & 各会话当前对象及打开处理记录\\
+\code{header_pending/data_pending} & 头对象处理和文件提交事件\\\bottomrule
+\end{tabularx}\end{table}
+
+LUH由APP提供，本次使用32字节测试头。文件服务通过\code{header_ok=header_pending}与\code{data_commit=data_pending}握手，文件名和长度按目录确定；第六章逐字节核对交付文件并记录100次连续传输。

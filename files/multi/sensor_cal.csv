@@ -1,0 +1,4 @@
+channel,offset,gain
+TEMP1,-0.15,1.002
+PRESS1,0.20,0.998
+ACCEL1,0.00,1.005

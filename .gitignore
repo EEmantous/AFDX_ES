@@ -1,0 +1,14 @@
+*.runs/
+*.sim/
+*.pr/
+db/
+incremental_db/
+*.wlf
+*.vcd
+transcript
+*.log
+*.jou
+*.bak
+__pycache__/
+docs/competition_draft/qa/
+docs/competition_draft/.tensorwriting/

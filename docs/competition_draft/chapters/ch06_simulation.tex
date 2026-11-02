@@ -1,0 +1,1063 @@
+\chapter{仿真报告}
+
+本章使用统一50 MHz仿真时钟，每10 ns翻转一次，完整周期20 ns。全部时刻来自本轮重新运行的日志和公开端口记录，按仿真起点计时；8位网络接口每拍输出一个有效字节时，对应400 Mbit/s的帧内字节速率。
+
+\section{单文件上传测试}
+
+磁盘源文件\code{text.txt}共1012字节，APP目录和TFTP请求统一使用\code{text.txt}，对应测试头为\code{text.LUH}。ES端IP为10.0.0.1，外部端IP为10.0.0.2。上传使用VL1，反向请求、应答和状态使用VL2。流程共23条业务消息；下面逐条列出A网发送副本的完整物理字节，B网发送相同内容。
+
+十六进制仅在文字字段按ASCII解读。前导码55表示帧同步，D5是SFD，二者不按普通文字解释；TFTP请求中的文件名、octet模式及用户文件文本再还原为自然语言。数据块在网络上的名称由最近的RRQ/WRQ会话确定。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{9mm}P{23mm}P{13mm}P{13mm}P{87mm}@{}}
+\caption{单文件上传的完整消息顺序}\\\toprule
+帧 & 首采样 µs & VL & SN & 消息及方向\\
+\midrule\endfirsthead\toprule
+帧 & 首采样 µs & VL & SN & 消息及方向\\
+\midrule\endhead
+1 & 29.170 & 1 & 1 & RRQ读取 ES\_L.LUI；ES端→外部端\\
+2 & 35.630 & 2 & 1 & DATA块1 ES\_L.LUI（正文9字节）；外部端→ES端\\
+3 & 41.310 & 1 & 2 & ACK块1 ES\_L.LUI；ES端→外部端\\
+4 & 47.970 & 2 & 2 & WRQ写入 ES\_L.LUS；外部端→ES端\\
+5 & 53.550 & 1 & 3 & ACK块0 ES\_L.LUS；ES端→外部端\\
+6 & 62.650 & 2 & 3 & DATA块1 ES\_L.LUS（正文43字节）；外部端→ES端\\
+7 & 70.890 & 1 & 4 & ACK块1 ES\_L.LUS；ES端→外部端\\
+8 & 122.350 & 1 & 5 & WRQ写入 ES\_L.LUR；ES端→外部端\\
+9 & 127.930 & 2 & 4 & ACK块0 ES\_L.LUR；外部端→ES端\\
+10 & 135.230 & 1 & 6 & DATA块1 ES\_L.LUR（正文25字节）；ES端→外部端\\
+11 & 142.030 & 2 & 5 & ACK块1 ES\_L.LUR；外部端→ES端\\
+12 & 144.950 & 2 & 6 & RRQ读取 text.LUH；外部端→ES端\\
+13 & 153.870 & 1 & 7 & DATA块1 text.LUH（正文32字节）；ES端→外部端\\
+14 & 161.230 & 2 & 7 & ACK块1 text.LUH；外部端→ES端\\
+15 & 242.410 & 2 & 8 & RRQ读取 text.txt；外部端→ES端\\
+16 & 248.990 & 1 & 8 & OACK协商 text.txt；ES端→外部端\\
+17 & 254.510 & 2 & 9 & ACK块0 text.txt；外部端→ES端\\
+18 & 380.750 & 1 & 9 & DATA块1 text.txt（正文1012字节）；ES端→外部端\\
+19 & 466.510 & 2 & 10 & ACK块1 text.txt；外部端→ES端\\
+20 & 469.430 & 2 & 11 & WRQ写入 ES\_L.LUS；外部端→ES端\\
+21 & 475.010 & 1 & 10 & ACK块0 ES\_L.LUS；ES端→外部端\\
+22 & 484.110 & 2 & 12 & DATA块1 ES\_L.LUS（正文43字节）；外部端→ES端\\
+23 & 492.350 & 1 & 11 & ACK块1 ES\_L.LUS；ES端→外部端\\
+\bottomrule\end{longtable}\endgroup
+
+
+\subsection*{帧1：RRQ读取 ES\_L.LUI}
+
+ES端→外部端；首字节29.170 µs，末字节30.590 µs；VL=1，SN=1，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口42000→69。请求读取初始化文件，取得业务准入状态，接下来等待对方DATA块1。 首包到UDP69，后续用实际应答端口。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧1物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 2D 00 00 40 00 40 11 26 BE 0A 00 00 01 0A 00 00 02 A4 10 00 45 00 19
+0030: 55 D6 00 01 45 53 5F 4C 2E 4C 55 49 00 6F 63 74 65 74 00 01 EB 7A 06 BD
+
+\end{lstlisting}
+\end{minipage}\par
+
+UDP正文前两字节00 01分别表示RRQ读取；后续ASCII文件名为ES\_L.LUI，00结束名称，6F 63 74 65 74 00还原为octet及结束零，表示按原始字节传输。
+
+\subsection*{帧2：DATA块1 ES\_L.LUI（正文9字节）}
+
+外部端→ES端；首字节35.630 µs，末字节37.050 µs；VL=2，SN=1，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口41000→42000。控制正文状态=1（接受，继续后续传输）；正文仍要由ACK确认。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧2物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 29 00 00 40 00 40 11 26 C2 0A 00 00 02 0A 00 00 01 A0 28 A4 10 00 15
+0030: 66 47 00 03 00 01 00 00 00 09 41 33 00 01 00 00 00 00 00 01 FE 6A E1 FC
+
+\end{lstlisting}
+\end{minipage}\par
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{20mm}P{42mm}P{89mm}@{}}
+\caption{帧2控制正文的实际字段}\\\toprule
+正文偏移 & 实际字节 & 含义\\
+\midrule\endfirsthead\toprule
+正文偏移 & 实际字节 & 含义\\
+\midrule\endhead
+0--3 & 00 00 00 09 & 控制文件总长度=9字节，大端\\
+4--5 & 41 33 & 控制文件版本文字=A3\\
+6--7 & 00 01 & 状态=1；1接受、2进行中、3成功\\
+8--8 & 00 & 说明字符串长度=0，含名称结尾NUL\\
+\bottomrule\end{longtable}\endgroup
+
+
+\subsection*{帧3：ACK块1 ES\_L.LUI}
+
+ES端→外部端；首字节41.310 µs，末字节42.730 µs；VL=1，SN=2，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口42000→41000。确认已接收块1；发送方据此推进到下一块或结束本文件会话。该确认本身不含文件字节。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧3物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 01 0A 00 00 02 A4 10 A0 28 00 0C
+0030: A7 95 00 04 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 02 E3 D8 A2 9B
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 01按大端解释为确认块号1。该确认号对应已经收到的数据块。
+
+\subsection*{帧4：WRQ写入 ES\_L.LUS}
+
+外部端→ES端；首字节47.970 µs，末字节49.390 µs；VL=2，SN=2，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口43000→69。申请写入状态控制文件，先等待ACK0才能发状态正文；最终状态决定业务是否完成。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧4物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 2D 00 00 40 00 40 11 26 BE 0A 00 00 02 0A 00 00 01 A7 F8 00 45 00 19
+0030: 51 E3 00 02 45 53 5F 4C 2E 4C 55 53 00 6F 63 74 65 74 00 02 EA BF 8E FF
+
+\end{lstlisting}
+\end{minipage}\par
+
+UDP正文前两字节00 02分别表示WRQ写入；后续ASCII文件名为ES\_L.LUS，00结束名称，6F 63 74 65 74 00还原为octet及结束零，表示按原始字节传输。
+
+\subsection*{帧5：ACK块0 ES\_L.LUS}
+
+ES端→外部端；首字节53.550 µs，末字节54.970 µs；VL=1，SN=3，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口41000→43000。对WRQ准许开始，确认号0，下一步发送DATA块1。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧5物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 01 0A 00 00 02 A0 28 A7 F8 00 0C
+0030: A3 AE 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03 46 F8 10 54
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 00按大端解释为确认块号0。本次ACK0允许WRQ发送方开始DATA1。
+
+\subsection*{帧6：DATA块1 ES\_L.LUS（正文43字节）}
+
+外部端→ES端；首字节62.650 µs，末字节64.670 µs；VL=2，SN=3，共102个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口43000→41000。控制正文状态=1（接受，继续后续传输）；正文仍要由ACK确认。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧6物理字节，偏移0000--0065}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 4B 00 00 40 00 40 11 26 A0 0A 00 00 02 0A 00 00 01 A7 F8 A0 28 00 37
+0030: 04 18 00 03 00 01 00 00 00 2B 41 33 00 01 00 00 01 00 00 00 00 30 30 30
+0048: 00 01 09 74 65 78 74 2E 4C 55 48 00 06 50 4E 2D 30 31 00 30 30 30 00 01
+0060: 00 03 C7 57 66 29
+
+\end{lstlisting}
+\end{minipage}\par
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{20mm}P{42mm}P{89mm}@{}}
+\caption{帧6控制正文的实际字段}\\\toprule
+正文偏移 & 实际字节 & 含义\\
+\midrule\endfirsthead\toprule
+正文偏移 & 实际字节 & 含义\\
+\midrule\endhead
+0--3 & 00 00 00 2B & 控制文件总长度=43字节，大端\\
+4--5 & 41 33 & 控制文件版本文字=A3\\
+6--7 & 00 01 & 状态=1；1接受、2进行中、3成功\\
+8--8 & 00 & 说明字符串长度=0，含名称结尾NUL\\
+9--10 & 00 01 & 状态序号=1\\
+11--12 & 00 00 & 异常计时=0\\
+13--14 & 00 00 & 估计时间=0\\
+15--17 & 30 30 30 & 进度=000\\
+18--19 & 00 01 & 数量=1\\
+20--20 & 09 & 名称字符串长度=9，含名称结尾NUL\\
+21--29 & 74 65 78 74 2E 4C 55 48 00 & 名称=text.LUH（NUL）\\
+30--30 & 06 & 部件号字符串长度=6，含名称结尾NUL\\
+31--36 & 50 4E 2D 30 31 00 & 部件号=PN-01（NUL）\\
+37--39 & 30 30 30 & 分项进度=000\\
+40--41 & 00 01 & 分项状态=1；1接受、2进行中、3成功\\
+42--42 & 00 & 说明字符串长度=0，含名称结尾NUL\\
+\bottomrule\end{longtable}\endgroup
+
+
+\subsection*{帧7：ACK块1 ES\_L.LUS}
+
+ES端→外部端；首字节70.890 µs，末字节72.310 µs；VL=1，SN=4，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口41000→43000。确认已接收块1；发送方据此推进到下一块或结束本文件会话。该确认本身不含文件字节。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧7物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 01 0A 00 00 02 A0 28 A7 F8 00 0C
+0030: A3 AD 00 04 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 04 A4 30 D9 D0
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 01按大端解释为确认块号1。该确认号对应已经收到的数据块。
+
+\subsection*{帧8：WRQ写入 ES\_L.LUR}
+
+ES端→外部端；首字节122.350 µs，末字节123.770 µs；VL=1，SN=5，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口42000→69。申请写入请求列表控制文件，先等待ACK0再发送列表；列表确定下一步读头或传数据的文件。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧8物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 2D 00 00 40 00 40 11 26 BE 0A 00 00 01 0A 00 00 02 A4 10 00 45 00 19
+0030: 55 CC 00 02 45 53 5F 4C 2E 4C 55 52 00 6F 63 74 65 74 00 05 A4 19 33 A9
+
+\end{lstlisting}
+\end{minipage}\par
+
+UDP正文前两字节00 02分别表示WRQ写入；后续ASCII文件名为ES\_L.LUR，00结束名称，6F 63 74 65 74 00还原为octet及结束零，表示按原始字节传输。
+
+\subsection*{帧9：ACK块0 ES\_L.LUR}
+
+外部端→ES端；首字节127.930 µs，末字节129.350 µs；VL=2，SN=4，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口41000→42000。对WRQ准许开始，确认号0，下一步发送DATA块1。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧9物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 02 0A 00 00 01 A0 28 A4 10 00 0C
+0030: A7 96 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 04 15 AD C3 60
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 00按大端解释为确认块号0。本次ACK0允许WRQ发送方开始DATA1。
+
+\subsection*{帧10：DATA块1 ES\_L.LUR（正文25字节）}
+
+ES端→外部端；首字节135.230 µs，末字节136.890 µs；VL=1，SN=6，共84个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口42000→41000。控制正文含数量、选定名称及相关字段，解析后触发LUH读取或数据传输；它不是用户文件正文。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧10物理字节，偏移0000--0053}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 39 00 00 40 00 40 11 26 B2 0A 00 00 01 0A 00 00 02 A4 10 A0 28 00 25
+0030: 69 F8 00 03 00 01 00 00 00 19 41 33 00 01 09 74 65 78 74 2E 4C 55 48 00
+0048: 06 50 4E 2D 30 31 00 06 DF 88 3D 90
+
+\end{lstlisting}
+\end{minipage}\par
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{20mm}P{42mm}P{89mm}@{}}
+\caption{帧10控制正文的实际字段}\\\toprule
+正文偏移 & 实际字节 & 含义\\
+\midrule\endfirsthead\toprule
+正文偏移 & 实际字节 & 含义\\
+\midrule\endhead
+0--3 & 00 00 00 19 & 控制文件总长度=25字节，大端\\
+4--5 & 41 33 & 控制文件版本文字=A3\\
+6--7 & 00 01 & 数量=1\\
+8--8 & 09 & 名称字符串长度=9，含名称结尾NUL\\
+9--17 & 74 65 78 74 2E 4C 55 48 00 & 名称=text.LUH（NUL）\\
+18--18 & 06 & 部件号字符串长度=6，含名称结尾NUL\\
+19--24 & 50 4E 2D 30 31 00 & 部件号=PN-01（NUL）\\
+\bottomrule\end{longtable}\endgroup
+
+
+\subsection*{帧11：ACK块1 ES\_L.LUR}
+
+外部端→ES端；首字节142.030 µs，末字节143.450 µs；VL=2，SN=5，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口41000→42000。确认已接收块1；发送方据此推进到下一块或结束本文件会话。该确认本身不含文件字节。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧11物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 02 0A 00 00 01 A0 28 A4 10 00 0C
+0030: A7 95 00 04 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 05 C2 C0 69 0D
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 01按大端解释为确认块号1。该确认号对应已经收到的数据块。
+
+\subsection*{帧12：RRQ读取 text.LUH}
+
+外部端→ES端；首字节144.950 µs，末字节146.370 µs；VL=2，SN=6，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口42000→69。请求读取LUH，接收后交给文件服务核对长度/CRC，再进入数据文件读取。 首包到UDP69，后续用实际应答端口。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧12物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 2D 00 00 40 00 40 11 26 BE 0A 00 00 02 0A 00 00 01 A4 10 00 45 00 19
+0030: 0D 9D 00 01 74 65 78 74 2E 4C 55 48 00 6F 63 74 65 74 00 06 71 AA DC 53
+
+\end{lstlisting}
+\end{minipage}\par
+
+UDP正文前两字节00 01分别表示RRQ读取；后续ASCII文件名为text.LUH，00结束名称，6F 63 74 65 74 00还原为octet及结束零，表示按原始字节传输。
+
+\subsection*{帧13：DATA块1 text.LUH（正文32字节）}
+
+ES端→外部端；首字节153.870 µs，末字节155.670 µs；VL=1，SN=7，共91个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口41000→42000。搬运text.LUH第1块的32个文件字节，起始文件偏移0；会话块长512字节；本块不足会话块长，标记该文件最后一块；仍需ACK和615A最终状态。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧13物理字节，偏移0000--005A}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 40 00 00 40 00 40 11 26 AB 0A 00 00 01 0A 00 00 02 A0 28 A4 10 00 2C
+0030: 1B 85 00 03 00 01 54 42 4C 55 48 05 06 07 00 00 03 F4 32 22 AE 56 10 11
+0048: 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 07 15 29 D0 D1
+
+\end{lstlisting}
+\end{minipage}\par
+
+正文前五字节54 42 4C 55 48按ASCII读为TBLUH；偏移8--11的00 00 03 F4为1012，偏移12--15的32 22 AE 56为数据CRC32。该32字节测试头作为独立对象传送，随后进入用户数据读取。
+
+\subsection*{帧14：ACK块1 text.LUH}
+
+外部端→ES端；首字节161.230 µs，末字节162.650 µs；VL=2，SN=7，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口42000→41000。确认已接收块1；发送方据此推进到下一块或结束本文件会话。该确认本身不含文件字节。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧14物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 02 0A 00 00 01 A4 10 A0 28 00 0C
+0030: A7 95 00 04 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 07 98 9A E9 67
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 01按大端解释为确认块号1。该确认号对应已经收到的数据块。
+
+\subsection*{帧15：RRQ读取 text.txt}
+
+外部端→ES端；首字节242.410 µs，末字节244.090 µs；VL=2，SN=8，共85个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口42000→69。请求读取text.txt并提出blksize=1467；服务器OACK后，客户端回ACK0，再由服务器发送DATA1。首包到UDP69，后续使用应答的实际会话端口。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧15物理字节，偏移0000--0054}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 3A 00 00 40 00 40 11 26 B1 0A 00 00 02 0A 00 00 01 A4 10 00 45 00 26
+0030: 24 2B 00 01 74 65 78 74 2E 74 78 74 00 6F 63 74 65 74 00 62 6C 6B 73 69
+0048: 7A 65 00 31 34 36 37 00 08 62 1A 05 21
+
+\end{lstlisting}
+\end{minipage}\par
+
+UDP正文前两字节00 01分别表示RRQ读取；后续ASCII文件名为text.txt，00结束名称，6F 63 74 65 74 00还原为octet及结束零，表示按原始字节传输。
+
+模式字段后追加\code{blksize}与十进制ASCII \code{1467}，均以\code{00}结束，提出1467字节文件正文块长。
+
+\subsection*{帧16：OACK协商 text.txt}
+
+ES端→外部端；首字节248.990 µs，末字节250.410 µs；VL=1，SN=8，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口41000→42000。服务器确认blksize=1467字节；本次RRQ读会话下一步由客户端ACK0确认，随后服务器发送DATA1。OACK不含文件字节。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧16物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 2B 00 00 40 00 40 11 26 C0 0A 00 00 01 0A 00 00 02 A0 28 A4 10 00 17
+0030: A3 B8 00 06 62 6C 6B 73 69 7A 65 00 31 34 36 37 00 00 00 08 96 CD FA 32
+
+\end{lstlisting}
+\end{minipage}\par
+
+UDP正文\hex{00 06}为OACK，其后\hex{62 6C 6B 73 69 7A 65 00}为blksize及结束零，\hex{31 34 36 37 00}为ASCII 1467及结束零。该帧确认块长，不携带文件字节，也不含DATA块号；后续ACK0确认读会话协商，再进入DATA1。
+
+\subsection*{帧17：ACK块0 text.txt}
+
+外部端→ES端；首字节254.510 µs，末字节255.930 µs；VL=2，SN=9，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口42000→41000。客户端以ACK0确认RRQ读会话收到的OACK，服务器随后发送DATA1；此确认不携带文件字节。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧17物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 02 0A 00 00 01 A4 10 A0 28 00 0C
+0030: A7 96 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 09 DE EA FC 9A
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 00按大端解释为确认块号0。本次ACK0确认RRQ读会话的OACK，服务器随后发送DATA1。
+
+\subsection*{帧18：DATA块1 text.txt（正文1012字节）}
+
+ES端→外部端；首字节380.750 µs，末字节402.150 µs；VL=1，SN=9，共1071个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口41000→42000。搬运text.txt第1块的1012个文件字节，起始文件偏移0；会话块长1467字节；本块不足会话块长，标记该文件最后一块；仍需ACK和615A最终状态。
+
+以下十六进制按绝对字节偏移分块排版，连续拼接为同一个物理帧，线上没有拆帧。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧18物理字节，偏移0000--01DF}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 04 14 00 00 40 00 40 11 22 D7 0A 00 00 01 0A 00 00 02 A0 28 A4 10 04 00
+0030: D1 FF 00 03 00 01 74 68 69 73 20 69 73 20 61 20 74 65 73 74 20 74 78 74
+0048: 20 66 6F 72 20 56 4C 30 32 2E 0D 0A 56 4C 30 32 20 52 4F 57 3D 30 30 30
+0060: 20 44 41 54 41 3D 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46 47 48
+0078: 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A 20 63 68 65 63 6B
+0090: 73 75 6D 2D 74 65 73 74 0D 0A 56 4C 30 32 20 52 4F 57 3D 30 30 31 20 44
+00A8: 41 54 41 3D 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46 47 48 49 4A
+00C0: 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A 20 63 68 65 63 6B 73 75
+00D8: 6D 2D 74 65 73 74 0D 0A 56 4C 30 32 20 52 4F 57 3D 30 30 32 20 44 41 54
+00F0: 41 3D 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46 47 48 49 4A 4B 4C
+0108: 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A 20 63 68 65 63 6B 73 75 6D 2D
+0120: 74 65 73 74 0D 0A 56 4C 30 32 20 52 4F 57 3D 30 30 33 20 44 41 54 41 3D
+0138: 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E
+0150: 4F 50 51 52 53 54 55 56 57 58 59 5A 20 63 68 65 63 6B 73 75 6D 2D 74 65
+0168: 73 74 0D 0A 56 4C 30 32 20 52 4F 57 3D 30 30 34 20 44 41 54 41 3D 30 31
+0180: 32 33 34 35 36 37 38 39 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50
+0198: 51 52 53 54 55 56 57 58 59 5A 20 63 68 65 63 6B 73 75 6D 2D 74 65 73 74
+01B0: 0D 0A 56 4C 30 32 20 52 4F 57 3D 30 30 35 20 44 41 54 41 3D 30 31 32 33
+01C8: 34 35 36 37 38 39 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52
+
+\end{lstlisting}
+\end{minipage}\par
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧18物理字节，偏移01E0--03BF}]
+
+01E0: 53 54 55 56 57 58 59 5A 20 63 68 65 63 6B 73 75 6D 2D 74 65 73 74 0D 0A
+01F8: 56 4C 30 32 20 52 4F 57 3D 30 30 36 20 44 41 54 41 3D 30 31 32 33 34 35
+0210: 36 37 38 39 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54
+0228: 55 56 57 58 59 5A 20 63 68 65 63 6B 73 75 6D 2D 74 65 73 74 0D 0A 56 4C
+0240: 30 32 20 52 4F 57 3D 30 30 37 20 44 41 54 41 3D 30 31 32 33 34 35 36 37
+0258: 38 39 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55 56
+0270: 57 58 59 5A 20 63 68 65 63 6B 73 75 6D 2D 74 65 73 74 0D 0A 56 4C 30 32
+0288: 20 52 4F 57 3D 30 30 38 20 44 41 54 41 3D 30 31 32 33 34 35 36 37 38 39
+02A0: 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58
+02B8: 59 5A 20 63 68 65 63 6B 73 75 6D 2D 74 65 73 74 0D 0A 56 4C 30 32 20 52
+02D0: 4F 57 3D 30 30 39 20 44 41 54 41 3D 30 31 32 33 34 35 36 37 38 39 41 42
+02E8: 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A
+0300: 20 63 68 65 63 6B 73 75 6D 2D 74 65 73 74 0D 0A 56 4C 30 32 20 52 4F 57
+0318: 3D 30 31 30 20 44 41 54 41 3D 30 31 32 33 34 35 36 37 38 39 41 42 43 44
+0330: 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A 20 63
+0348: 68 65 63 6B 73 75 6D 2D 74 65 73 74 0D 0A 56 4C 30 32 20 52 4F 57 3D 30
+0360: 31 31 20 44 41 54 41 3D 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46
+0378: 47 48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A 20 63 68 65
+0390: 63 6B 73 75 6D 2D 74 65 73 74 0D 0A 56 4C 30 32 20 52 4F 57 3D 30 31 32
+03A8: 20 44 41 54 41 3D 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46 47 48
+
+\end{lstlisting}
+\end{minipage}\par
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧18物理字节，偏移03C0--042E}]
+
+03C0: 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A 20 63 68 65 63 6B
+03D8: 73 75 6D 2D 74 65 73 74 0D 0A 56 4C 30 32 20 52 4F 57 3D 30 31 33 20 44
+03F0: 41 54 41 3D 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46 47 48 49 4A
+0408: 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A 20 63 68 65 63 6B 73 75
+0420: 6D 2D 74 65 73 74 0D 0A 0D 0A 09 0B 8D BE 85
+
+\end{lstlisting}
+\end{minipage}\par
+
+DATA操作码00 03之后为块号1，其后1012字节为实际文件内容。首行“this is a test txt for VL02.”意为“这是用于VL02的测试文本”。ROW表示行号，DATA表示该行的数据字串，checksum-test是测试标记，0D 0A表示回车换行。本次协商1467字节块长，1012字节文件全部位于这一个DATA块中。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={该DATA块还原的实际文本}]
+
+this is a test txt for VL02.
+VL02 ROW=000 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=001 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=002 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=003 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=004 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=005 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=006 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=007 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=008 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=009 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=010 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=011 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=012 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+VL02 ROW=013 DATA=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ checksum-test
+
+
+
+\end{lstlisting}
+\end{minipage}\par
+
+\subsection*{帧19：ACK块1 text.txt}
+
+外部端→ES端；首字节466.510 µs，末字节467.930 µs；VL=2，SN=10，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口42000→41000。确认已接收块1；发送方据此推进到下一块或结束本文件会话。该确认本身不含文件字节。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧19物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 02 0A 00 00 01 A4 10 A0 28 00 0C
+0030: A7 95 00 04 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 0A 25 E6 58 19
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 01按大端解释为确认块号1。该确认号对应已经收到的数据块。
+
+\subsection*{帧20：WRQ写入 ES\_L.LUS}
+
+外部端→ES端；首字节469.430 µs，末字节470.850 µs；VL=2，SN=11，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口43000→69。申请写入状态控制文件，先等待ACK0才能发状态正文；最终状态决定业务是否完成。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧20物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 2D 00 00 40 00 40 11 26 BE 0A 00 00 02 0A 00 00 01 A7 F8 00 45 00 19
+0030: 51 E3 00 02 45 53 5F 4C 2E 4C 55 53 00 6F 63 74 65 74 00 0B 4E 07 52 86
+
+\end{lstlisting}
+\end{minipage}\par
+
+UDP正文前两字节00 02分别表示WRQ写入；后续ASCII文件名为ES\_L.LUS，00结束名称，6F 63 74 65 74 00还原为octet及结束零，表示按原始字节传输。
+
+\subsection*{帧21：ACK块0 ES\_L.LUS}
+
+ES端→外部端；首字节475.010 µs，末字节476.430 µs；VL=1，SN=10，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口41000→43000。对WRQ准许开始，确认号0，下一步发送DATA块1。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧21物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 01 0A 00 00 02 A0 28 A7 F8 00 0C
+0030: A3 AE 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0A E2 40 CC 2D
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 00按大端解释为确认块号0。本次ACK0允许WRQ发送方开始DATA1。
+
+\subsection*{帧22：DATA块1 ES\_L.LUS（正文43字节）}
+
+外部端→ES端；首字节484.110 µs，末字节486.130 µs；VL=2，SN=12，共102个物理字节。
+
+源MAC：\code{02:00:0A:00:00:02}；目的MAC：\code{03:00:00:00:00:02}。
+
+UDP端口43000→41000。控制正文状态=3（业务成功，可形成完成结果并提交文件）；正文仍要由ACK确认。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧22物理字节，偏移0000--0065}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 02 02 00 0A 00 00 02 08 00 45 00
+0018: 00 4B 00 00 40 00 40 11 26 A0 0A 00 00 02 0A 00 00 01 A7 F8 A0 28 00 37
+0030: 03 12 00 03 00 01 00 00 00 2B 41 33 00 03 00 00 02 00 00 00 00 31 30 30
+0048: 00 01 09 74 65 78 74 2E 4C 55 48 00 06 50 4E 2D 30 31 00 31 30 30 00 03
+0060: 00 0C A1 E3 69 86
+
+\end{lstlisting}
+\end{minipage}\par
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{20mm}P{42mm}P{89mm}@{}}
+\caption{帧22控制正文的实际字段}\\\toprule
+正文偏移 & 实际字节 & 含义\\
+\midrule\endfirsthead\toprule
+正文偏移 & 实际字节 & 含义\\
+\midrule\endhead
+0--3 & 00 00 00 2B & 控制文件总长度=43字节，大端\\
+4--5 & 41 33 & 控制文件版本文字=A3\\
+6--7 & 00 03 & 状态=3；1接受、2进行中、3成功\\
+8--8 & 00 & 说明字符串长度=0，含名称结尾NUL\\
+9--10 & 00 02 & 状态序号=2\\
+11--12 & 00 00 & 异常计时=0\\
+13--14 & 00 00 & 估计时间=0\\
+15--17 & 31 30 30 & 进度=100\\
+18--19 & 00 01 & 数量=1\\
+20--20 & 09 & 名称字符串长度=9，含名称结尾NUL\\
+21--29 & 74 65 78 74 2E 4C 55 48 00 & 名称=text.LUH（NUL）\\
+30--30 & 06 & 部件号字符串长度=6，含名称结尾NUL\\
+31--36 & 50 4E 2D 30 31 00 & 部件号=PN-01（NUL）\\
+37--39 & 31 30 30 & 分项进度=100\\
+40--41 & 00 03 & 分项状态=3；1接受、2进行中、3成功\\
+42--42 & 00 & 说明字符串长度=0，含名称结尾NUL\\
+\bottomrule\end{longtable}\endgroup
+
+
+\subsection*{帧23：ACK块1 ES\_L.LUS}
+
+ES端→外部端；首字节492.350 µs，末字节493.770 µs；VL=1，SN=11，共72个物理字节。
+
+源MAC：\code{02:00:0A:00:00:01}；目的MAC：\code{03:00:00:00:00:01}。
+
+UDP端口41000→43000。确认已接收块1；发送方据此推进到下一块或结束本文件会话。该确认本身不含文件字节。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={帧23物理字节，偏移0000--0047}]
+
+0000: 55 55 55 55 55 55 55 D5 03 00 00 00 00 01 02 00 0A 00 00 01 08 00 45 00
+0018: 00 20 00 00 40 00 40 11 26 CB 0A 00 00 01 0A 00 00 02 A0 28 A7 F8 00 0C
+0030: A3 AD 00 04 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 0B 35 2D 66 40
+
+\end{lstlisting}
+\end{minipage}\par
+
+00 04表示ACK，后两字节00 01按大端解释为确认块号1。该确认号对应已经收到的数据块。
+
+一个用户DATA块携带全部1012字节，UDP正文1016字节，线上帧1071字节。外部端APP在495.670--556.330 µs收到正文，与磁盘text.txt逐字节一致。成功状态3通过最终LUS返回，ACK确认后完成会话。
+
+\section{十文件并发传输}
+
+十份真实源文件位于files/multi，内容包括航班计划、航路、配置、日志、标定和二进制载荷。69.770 µs观察到十个任务同时运行。源APP先输入文件，业务任务在各VL上并行推进，物理链路按帧交错发送。所有文件最终交给10.0.0.2的接收APP。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{31mm}P{14mm}P{14mm}P{41mm}P{44mm}@{}}
+\caption{十文件与实测虚拟链路、目的MAC}\\\toprule
+文件 & 上传VL & 反向VL & 上传目的MAC & 反向目的MAC\\
+\midrule\endfirsthead\toprule
+文件 & 上传VL & 反向VL & 上传目的MAC & 反向目的MAC\\
+\midrule\endhead
+flight\_plan.txt & 1 & 11 & 03:00:00:00:00:01 & 03:00:00:00:00:0B\\
+routes.csv & 2 & 12 & 03:00:00:00:00:02 & 03:00:00:00:00:0C\\
+radio.cfg & 3 & 13 & 03:00:00:00:00:03 & 03:00:00:00:00:0D\\
+cabin\_msg.txt & 4 & 14 & 03:00:00:00:00:04 & 03:00:00:00:00:0E\\
+nav\_points.csv & 5 & 15 & 03:00:00:00:00:05 & 03:00:00:00:00:0F\\
+limits.json & 6 & 16 & 03:00:00:00:00:06 & 03:00:00:00:00:10\\
+maint\_log.txt & 7 & 17 & 03:00:00:00:00:07 & 03:00:00:00:00:11\\
+sensor\_cal.csv & 8 & 18 & 03:00:00:00:00:08 & 03:00:00:00:00:12\\
+status.ini & 9 & 19 & 03:00:00:00:00:09 & 03:00:00:00:00:13\\
+payload.bin & 10 & 20 & 03:00:00:00:00:0A & 03:00:00:00:00:14\\
+\bottomrule\end{longtable}\endgroup
+
+
+上传帧源MAC统一为02:00:0A:00:00:01，反向帧源MAC为02:00:0A:00:00:02。A/B副本采用相同VL、MAC和SN。目的MAC的最后两字节在正文之前出现，下面给出VL字段收齐及正文开始发送的实测时刻。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{29mm}P{12mm}P{28mm}P{27mm}P{27mm}P{25mm}@{}}
+\caption{每份文件何时从何处发出及交付（µs）}\\\toprule
+文件 & VL & 源APP输入首--末 & VL字段收齐 & DATA正文首字节 & 接收APP末字节\\
+\midrule\endfirsthead\toprule
+文件 & VL & 源APP输入首--末 & VL字段收齐 & DATA正文首字节 & 接收APP末字节\\
+\midrule\endhead
+flight\_plan.txt & 1 & 47.810--49.270 & 7,557.510 & 7,558.330 & 12,601.170\\
+routes.csv & 2 & 50.010--51.130 & 7,562.530 & 7,563.350 & 13,570.490\\
+radio.cfg & 3 & 51.870--53.210 & 7,567.430 & 7,568.250 & 7,643.050\\
+cabin\_msg.txt & 4 & 53.950--55.810 & 7,573.070 & 7,573.890 & 7,649.290\\
+nav\_points.csv & 5 & 56.550--57.910 & 7,578.730 & 7,579.550 & 13,581.310\\
+limits.json & 6 & 58.650--59.990 & 7,583.870 & 7,584.690 & 7,653.970\\
+maint\_log.txt & 7 & 60.730--62.310 & 7,589.230 & 7,590.050 & 7,659.370\\
+sensor\_cal.csv & 8 & 63.050--64.510 & 7,594.710 & 7,595.530 & 7,664.370\\
+status.ini & 9 & 65.250--66.690 & 7,600.050 & 7,600.870 & 7,669.350\\
+payload.bin & 10 & 67.430--69.330 & 7,605.830 & 7,606.650 & 7,675.750\\
+\bottomrule\end{longtable}\endgroup
+
+
+7,558.330 µs，ES端开始发送flight\_plan.txt的文件正文，上传VL=1，目的MAC=03:00:00:00:00:01；7,558.330 µs外部端开始收到同一正文，12,601.170 µs接收APP收齐74字节。
+
+7,563.350 µs，ES端开始发送routes.csv的文件正文，上传VL=2，目的MAC=03:00:00:00:00:02；7,563.350 µs外部端开始收到同一正文，13,570.490 µs接收APP收齐57字节。
+
+该文件正文随后在12,556.290 µs重发，仍使用原VL；最终APP只交付一份。
+
+7,568.250 µs，ES端开始发送radio.cfg的文件正文，上传VL=3，目的MAC=03:00:00:00:00:03；7,568.250 µs外部端开始收到同一正文，7,643.050 µs接收APP收齐68字节。
+
+7,573.890 µs，ES端开始发送cabin\_msg.txt的文件正文，上传VL=4，目的MAC=03:00:00:00:00:04；7,573.890 µs外部端开始收到同一正文，7,649.290 µs接收APP收齐94字节。
+
+7,579.550 µs，ES端开始发送nav\_points.csv的文件正文，上传VL=5，目的MAC=03:00:00:00:00:05；7,579.550 µs外部端开始收到同一正文，13,581.310 µs接收APP收齐69字节。
+
+该文件正文随后在12,568.610 µs重发，仍使用原VL；最终APP只交付一份。
+
+7,584.690 µs，ES端开始发送limits.json的文件正文，上传VL=6，目的MAC=03:00:00:00:00:06；7,584.690 µs外部端开始收到同一正文，7,653.970 µs接收APP收齐68字节。
+
+7,590.050 µs，ES端开始发送maint\_log.txt的文件正文，上传VL=7，目的MAC=03:00:00:00:00:07；7,590.050 µs外部端开始收到同一正文，7,659.370 µs接收APP收齐80字节。
+
+7,595.530 µs，ES端开始发送sensor\_cal.csv的文件正文，上传VL=8，目的MAC=03:00:00:00:00:08；7,595.530 µs外部端开始收到同一正文，7,664.370 µs接收APP收齐74字节。
+
+7,600.870 µs，ES端开始发送status.ini的文件正文，上传VL=9，目的MAC=03:00:00:00:00:09；7,600.870 µs外部端开始收到同一正文，7,669.350 µs接收APP收齐73字节。
+
+7,606.650 µs，ES端开始发送payload.bin的文件正文，上传VL=10，目的MAC=03:00:00:00:00:0A；7,606.650 µs外部端开始收到同一正文，7,675.750 µs接收APP收齐96字节。
+
+flight\_plan.txt的状态写入请求时刻为108.370、1,320.470、2,508.410、3,708.430、4,908.450、6,108.470、7,308.490、7,577.170、12,569.850 µs。routes.csv与nav\_points.csv还经历数据重发及状态会话等待，因此其APP交付晚于其他文件。每份数据文件、两侧DATA正文及最终APP输出均逐字节比较通过。
+
+\section{615A下载}
+
+下载用例以外部端为文件源，ES端APP提交操作3。LND初始化接受后，LNR请求列表确定数据文件。目标端发起WRQ：452字节文件收到ACK0后发送DATA1；1012字节文件经OACK确认1467字节块长后直接发送DATA1。两份文件均逐块ACK，最终用LNS状态3闭合业务。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{48mm}P{20mm}P{42mm}P{42mm}@{}}
+\caption{下载文件的源输入与ES端APP交付}\\\toprule
+文件及交付位置 & 字节数 & 源APP输入首--末 µs & 接收APP交付首--末 µs\\
+\midrule\endfirsthead\toprule
+文件及交付位置 & 字节数 & 源APP输入首--末 µs & 接收APP交付首--末 µs\\
+\midrule\endhead
+text1.txt；ES端APP & 452 & 5.610--14.630 & 3,937.610--3,965.490\\
+text2.txt；ES端APP & 1012 & 15.370--35.590 & 5,332.790--5,395.270\\
+\bottomrule\end{longtable}\endgroup
+
+
+text1.txt首行读为“this is a test txt for VL01.”，text2.txt首行对应VL02。452字节文件使用未协商的512字节块长，由一个DATA结束；1012字节文件通过WRQ/OACK协商1467字节块长，也由一个DATA承载。两份输出与源文件逐字节一致。
+
+\section{SNMP查询}
+
+外部端从A网输入两次GET，管理RX VL为0x0102。两次查询之间，APP提交发往无响应IP的文件任务，使TFTP产生重试并由615A输出失败事件。Response从VL0x0103发出，Trap从VL0x0104发出。
+
+消息1在0.190 µs开始，SNMP GET查询，VL=258。
+
+源MAC：\code{02:00:00:00:00:10}；目的MAC：\code{03:00:00:00:01:02}。
+
+消息2在100.490 µs开始，SNMP Response回复，VL=259。
+
+源MAC：\code{02:00:C0:A8:00:03}；目的MAC：\code{03:00:00:00:01:03}。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{83mm}P{14mm}P{54mm}@{}}
+\caption{消息2返回的实际对象值}\\\toprule
+OID & BER类型 & 实际值\\
+\midrule\endfirsthead\toprule
+OID & BER类型 & 实际值\\
+\midrule\endhead
+1.3.6.1.2.1.1.5.0 & 04 & AFDX-V3\\
+1.3.6.1.3.9999.2.9.0 & 42 & 771\\
+1.3.6.1.3.9999.2.12.0 & 42 & 3232235536\\
+1.3.6.1.3.9999.2.33.0 & 42 & 0\\
+1.3.6.1.3.9999.2.1.0 & 42 & 1\\
+1.3.6.1.3.9999.2.4.0 & 42 & 0\\
+1.3.6.1.3.9999.1.35.0 & 42 & 0\\
+\bottomrule\end{longtable}\endgroup
+
+
+消息5在200.090 µs开始，SNMP Trap通知，VL=260。
+
+源MAC：\code{02:00:C0:A8:00:03}；目的MAC：\code{03:00:00:00:01:04}。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{83mm}P{14mm}P{54mm}@{}}
+\caption{消息5返回的实际对象值}\\\toprule
+OID & BER类型 & 实际值\\
+\midrule\endfirsthead\toprule
+OID & BER类型 & 实际值\\
+\midrule\endhead
+1.3.6.1.2.1.1.3.0 & 43 & 0\\
+1.3.6.1.6.3.1.1.4.1.0 & 06 & 1.3.6.1.3.9999.0.1\\
+1.3.6.1.3.9999.3.1.0 & 42 & 9\\
+1.3.6.1.3.9999.3.2.0 & 42 & 1\\
+1.3.6.1.3.9999.3.3.0 & 42 & 1\\
+1.3.6.1.3.9999.3.4.0 & 42 & 2\\
+1.3.6.1.3.9999.3.5.0 & 42 & 0\\
+\bottomrule\end{longtable}\endgroup
+
+
+消息7在280.430 µs开始，SNMP Trap通知，VL=260。
+
+源MAC：\code{02:00:C0:A8:00:03}；目的MAC：\code{03:00:00:00:01:04}。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{83mm}P{14mm}P{54mm}@{}}
+\caption{消息7返回的实际对象值}\\\toprule
+OID & BER类型 & 实际值\\
+\midrule\endfirsthead\toprule
+OID & BER类型 & 实际值\\
+\midrule\endhead
+1.3.6.1.2.1.1.3.0 & 43 & 0\\
+1.3.6.1.6.3.1.1.4.1.0 & 06 & 1.3.6.1.3.9999.0.1\\
+1.3.6.1.3.9999.3.1.0 & 42 & 9\\
+1.3.6.1.3.9999.3.2.0 & 42 & 1\\
+1.3.6.1.3.9999.3.3.0 & 42 & 2\\
+1.3.6.1.3.9999.3.4.0 & 42 & 2\\
+1.3.6.1.3.9999.3.5.0 & 42 & 0\\
+\bottomrule\end{longtable}\endgroup
+
+
+消息9在360.770 µs开始，SNMP Trap通知，VL=260。
+
+源MAC：\code{02:00:C0:A8:00:03}；目的MAC：\code{03:00:00:00:01:04}。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{83mm}P{14mm}P{54mm}@{}}
+\caption{消息9返回的实际对象值}\\\toprule
+OID & BER类型 & 实际值\\
+\midrule\endfirsthead\toprule
+OID & BER类型 & 实际值\\
+\midrule\endhead
+1.3.6.1.2.1.1.3.0 & 43 & 0\\
+1.3.6.1.6.3.1.1.4.1.0 & 06 & 1.3.6.1.3.9999.0.1\\
+1.3.6.1.3.9999.3.1.0 & 42 & 9\\
+1.3.6.1.3.9999.3.2.0 & 42 & 1\\
+1.3.6.1.3.9999.3.3.0 & 42 & 3\\
+1.3.6.1.3.9999.3.4.0 & 42 & 2\\
+1.3.6.1.3.9999.3.5.0 & 42 & 0\\
+\bottomrule\end{longtable}\endgroup
+
+
+消息11在441.110 µs开始，SNMP Trap通知，VL=260。
+
+源MAC：\code{02:00:C0:A8:00:03}；目的MAC：\code{03:00:00:00:01:04}。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{83mm}P{14mm}P{54mm}@{}}
+\caption{消息11返回的实际对象值}\\\toprule
+OID & BER类型 & 实际值\\
+\midrule\endfirsthead\toprule
+OID & BER类型 & 实际值\\
+\midrule\endhead
+1.3.6.1.2.1.1.3.0 & 43 & 0\\
+1.3.6.1.6.3.1.1.4.1.0 & 06 & 1.3.6.1.3.9999.0.1\\
+1.3.6.1.3.9999.3.1.0 & 42 & 9\\
+1.3.6.1.3.9999.3.2.0 & 42 & 1\\
+1.3.6.1.3.9999.3.3.0 & 42 & 4\\
+1.3.6.1.3.9999.3.4.0 & 42 & 2\\
+1.3.6.1.3.9999.3.5.0 & 42 & 0\\
+\bottomrule\end{longtable}\endgroup
+
+
+消息13在521.450 µs开始，SNMP Trap通知，VL=260。
+
+源MAC：\code{02:00:C0:A8:00:03}；目的MAC：\code{03:00:00:00:01:04}。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{83mm}P{14mm}P{54mm}@{}}
+\caption{消息13返回的实际对象值}\\\toprule
+OID & BER类型 & 实际值\\
+\midrule\endfirsthead\toprule
+OID & BER类型 & 实际值\\
+\midrule\endhead
+1.3.6.1.2.1.1.3.0 & 43 & 0\\
+1.3.6.1.6.3.1.1.4.1.0 & 06 & 1.3.6.1.3.9999.0.1\\
+1.3.6.1.3.9999.3.1.0 & 42 & 9\\
+1.3.6.1.3.9999.3.2.0 & 42 & 1\\
+1.3.6.1.3.9999.3.3.0 & 42 & 5\\
+1.3.6.1.3.9999.3.4.0 & 42 & 2\\
+1.3.6.1.3.9999.3.5.0 & 42 & 0\\
+\bottomrule\end{longtable}\endgroup
+
+
+消息14在601.870 µs开始，SNMP Trap通知，VL=260。
+
+源MAC：\code{02:00:C0:A8:00:03}；目的MAC：\code{03:00:00:00:01:04}。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{83mm}P{14mm}P{54mm}@{}}
+\caption{消息14返回的实际对象值}\\\toprule
+OID & BER类型 & 实际值\\
+\midrule\endfirsthead\toprule
+OID & BER类型 & 实际值\\
+\midrule\endhead
+1.3.6.1.2.1.1.3.0 & 43 & 0\\
+1.3.6.1.6.3.1.1.4.1.0 & 06 & 1.3.6.1.3.9999.0.1\\
+1.3.6.1.3.9999.3.1.0 & 42 & 8\\
+1.3.6.1.3.9999.3.2.0 & 42 & 1\\
+1.3.6.1.3.9999.3.3.0 & 42 & 1\\
+1.3.6.1.3.9999.3.4.0 & 42 & 1\\
+1.3.6.1.3.9999.3.5.0 & 42 & 4099\\
+\bottomrule\end{longtable}\endgroup
+
+
+消息15在991.250 µs开始，SNMP GET查询，VL=258。
+
+源MAC：\code{02:00:00:00:00:10}；目的MAC：\code{03:00:00:00:01:02}。
+
+消息16在1,091.550 µs开始，SNMP Response回复，VL=259。
+
+源MAC：\code{02:00:C0:A8:00:03}；目的MAC：\code{03:00:00:00:01:03}。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{83mm}P{14mm}P{54mm}@{}}
+\caption{消息16返回的实际对象值}\\\toprule
+OID & BER类型 & 实际值\\
+\midrule\endfirsthead\toprule
+OID & BER类型 & 实际值\\
+\midrule\endhead
+1.3.6.1.2.1.1.5.0 & 04 & AFDX-V3\\
+1.3.6.1.3.9999.2.9.0 & 42 & 771\\
+1.3.6.1.3.9999.2.12.0 & 42 & 3232235536\\
+1.3.6.1.3.9999.2.33.0 & 42 & 0\\
+1.3.6.1.3.9999.2.1.0 & 42 & 2\\
+1.3.6.1.3.9999.2.4.0 & 42 & 0\\
+1.3.6.1.3.9999.1.35.0 & 42 & 1\\
+\bottomrule\end{longtable}\endgroup
+
+
+GET前后请求计数由1到2，加载失败累计数由0到1。Trap类别9对应重试，类别8对应失败；失败原因4099即0x1003。运行时间以百分之一秒计，本次毫秒级用例中显示0。
+
+
+\section{多VL完整端系统测试}
+
+这两个用例均通过完整APP、网络、615A和MAC路径传文件。2 VL用例同时提交两份文件；128 VL用例先预存128份文件，再逐条业务VL上传，任务并行数为1。每条VL都实际产生用户DATA、协议应答和最终APP交付。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{30mm}P{25mm}P{45mm}P{45mm}@{}}
+\caption{vl2接收端APP实际交付记录}\\\toprule
+文件ID & 字节数 & 交付首字节 µs & 交付末字节 µs\\
+\midrule\endfirsthead\toprule
+文件ID & 字节数 & 交付首字节 µs & 交付末字节 µs\\
+\midrule\endhead
+1 & 64 & 279.730 & 283.630\\
+2 & 65 & 285.750 & 289.710\\
+\bottomrule\end{longtable}\endgroup
+
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{30mm}P{25mm}P{45mm}P{45mm}@{}}
+\caption{vl128接收端APP实际交付记录（首末各三项）}\\\toprule
+文件ID & 字节数 & 交付首字节 µs & 交付末字节 µs\\
+\midrule\endfirsthead\toprule
+文件ID & 字节数 & 交付首字节 µs & 交付末字节 µs\\
+\midrule\endhead
+1 & 64 & 1,681.550 & 1,685.450\\
+2 & 65 & 1,947.630 & 1,951.610\\
+3 & 66 & 2,216.310 & 2,220.330\\
+126 & 69 & 53,320.050 & 53,324.250\\
+127 & 70 & 53,882.150 & 53,886.410\\
+128 & 71 & 54,446.810 & 54,451.130\\
+\bottomrule\end{longtable}\endgroup
+
+
+\section{传输速度与延迟分析}
+
+速度测试采用磁盘文件\code{rate.bin}，文件长度8192字节，APP目录、TFTP请求均使用同名文件，配套头文件为\code{rate.LUH}。两台真实端系统在起始时复位一次，此后连续完成100次615A上传；每次重新提交目录和文件，并逐字节检查接收APP交付的正文。
+
+\subsection{文件正文传输速度}
+
+统计字节数为一次实际交付的文件正文8192字节，A/B冗余副本按一份文件计算。开始时刻$t_{s,i}$取发送端发出该文件第1个TFTP DATA帧的首字节；结束时刻$t_{e,i}$取接收端收到该文件最后一个DATA帧末字节后的时刻。区间包含帧传输、块间应答和等待，不包含首个DATA之前或末个DATA之后的控制交互。
+
+本测试两端GMII直接连线，接收数据与发送数据同拍，末字节结束取末次采样加20 ns。第$i$次文件速度与100次算术平均为
+
+\[T_i=t_{e,i}-t_{s,i},\qquad v_i=\frac{8192\ \mathrm{bytes}}{T_i},\qquad \overline v=\frac{1}{100}\sum_{i=1}^{100}v_i.\]
+
+时间以秒计，速率以字节每秒计；下表使用十进制MB/s。相同文件长度下，所用时间越长，平均速度越低。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{12mm}P{20mm}P{30mm}P{30mm}P{28mm}P{30mm}@{}}
+\caption{100次文件正文传输速度（节选）}\\\toprule
+试次 & 文件字节 & 首帧发送 µs & 末帧收齐 µs & 用时 µs & 速度 MB/s\\
+\midrule\endfirsthead\toprule
+试次 & 文件字节 & 首帧发送 µs & 末帧收齐 µs & 用时 µs & 速度 MB/s\\
+\midrule\endhead
+1 & 8192 & 578.950 & 2,039.070 & 1,460.120 & 5.610498\\
+2 & 8192 & 3,718.370 & 5,178.490 & 1,460.120 & 5.610498\\
+3 & 8192 & 6,857.790 & 8,317.910 & 1,460.120 & 5.610498\\
+98 & 8192 & 305,102.690 & 306,562.810 & 1,460.120 & 5.610498\\
+99 & 8192 & 308,242.110 & 309,702.230 & 1,460.120 & 5.610498\\
+100 & 8192 & 311,381.530 & 312,841.650 & 1,460.120 & 5.610498\\
+\bottomrule\end{longtable}\endgroup
+
+
+100次均完成并逐字节校验，每次交付8192字节，总计819200字节。单次平均测量时间1,460.120 µs，文件正文平均速度5.610498 MB/s（44.883982 Mbit/s）。
+
+帧内有效字节以20 ns周期连续输出，8位接口对应400 Mbit/s。平均交互速率还包含接收写回、应答及下一块准备时间。下表取首轮第2块DATA、对应ACK2和第3块DATA，直接按物理帧首末时刻分解一个块间周期。
+
+\begingroup\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}P{112mm}P{37mm}@{}}
+\caption{满DATA帧之间的实测时间组成}\\\toprule
+阶段 & 时间 µs\\*
+\midrule\endfirsthead\toprule
+阶段 & 时间 µs\\*
+\midrule\endhead
+发送满DATA帧 & 30.520\\*
+DATA结束至ACK开始 & 91.640\\*
+发送ACK帧 & 1.440\\*
+ACK结束至下一DATA开始 & 179.400\\*
+两次DATA发送起点间隔 & 303.000\\*
+\bottomrule\end{longtable}\endgroup
+
+
+1526字节满DATA的在线时间为30.520 µs，与400 Mbit/s帧内速率一致。本轮为50 MHz统一时钟下的功能仿真。DATA结束至ACK开始覆盖接收解析和文件写回；ACK结束至下一DATA开始覆盖应答处理、文件取数及逐级组帧。当前业务BAG配置为1个时钟周期，主要空闲区间来自这些处理步骤与TFTP逐块确认。A网双向、双网双向和单条链路的帧内线速按各自边界列示，双网累计数值表示实际冗余流量。
+
+\section{A网断开、字节损坏及帧合并逻辑}
+
+\subsection{完整帧选择与副本消除}
+
+发送端将完整帧复制到A/B，两份副本带相同VL和SN。接收MAC各自收齐帧、计算CRC并验证FCS，只有通过的完整帧进入各自正文队列。合并器对候选帧查找VL槽：新序号进入SEND，保持所选网面至帧尾并更新该VL的最近序号；同一序号进入DRAIN，消费另一份副本而不向业务重复输出。A/B同时可用时选A；仅B可用时选B。
+
+\par\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=Verilog,caption={副本选择器的实际状态决定}]
+IDLE: if(a_valid || b_valid) begin
+  select_a<=a_valid;
+  slot<=candidate_slot;
+  state<=seen[candidate_slot] &&
+         last_sn[candidate_slot]==candidate_sn ? DRAIN : SEND;
+end
+SEND: if(out_valid && out_ready && out_last) begin
+  seen[slot]<=1;
+  last_sn[slot]<=out_sequence_number;
+  state<=IDLE;
+end
+\end{lstlisting}
+\end{minipage}\par
+
+\subsection{A网断开}
+
+测试将A网接收DV从复位后保持0，所以A网没有完整有效接收帧进入后续队列；B网DV正常，完成DATA、ACK及最终状态。选择器在候选有效性上直接选择B。A网数据线随发送仍可变化，但DV为0的字节不计入候选帧。
+
+接收APP在6,365.810--6,393.710 µs得到452字节text1.txt，逐字节比较通过，文件只交付一次。
+
+\subsection{A网单字节损坏}
+
+测试在一帧中只翻转A网一个数据位，保留原FCS且不置ER。损坏导致A网CRC残值不匹配，A网MAC在帧结束处丢弃整帧。B网同一VL/SN的完整副本FCS通过并进入SEND，文件由该完整副本继续完成。合并以整帧选择为单位，实际用户字节由选中的一份完整正文顺序提供。
+
+实测消息14、物理字节偏移60在2,478.610 µs出现差异：A网为01，B网为00；两网DV均为1、ER均为0。原FCS未改，A网CRC不匹配而B网匹配。
+
+最终APP在6,365.810--6,393.710 µs收齐452字节，内容CRC32为3CB68639，与源text1.txt相同。错误帧不会先把部分正文交给业务，文件输出只有一份。
+
